@@ -1,26 +1,30 @@
-#include<vector>
+#ifndef STRATEGY_H
+#define STRATEGY_H
+
+#include <vector>
+#include "fileparser.h"
 using namespace std;
 class Strategy
 {
 	public:
-		Strategy(){}
+		Strategy(FileParser *fp) : mFileParser(fp) {}
 		virtual long compact() = 0;
+	protected:
+		FileParser *mFileParser;
 };
 
 class GreedyStrategy : public Strategy
 {
 	public:
-		GreedyStrategy(vector< vector<long> > sstables) : mSSTables(sstables) {}
+		GreedyStrategy(FileParser *fp) : Strategy(fp) {}
 		virtual long compact();
-	private:
-		vector< vector<long> > mSSTables;
 };
 
 class SizeTieredStrategy : public Strategy
 {
 	public:
-		SizeTieredStrategy(vector< vector<long> > sstables) : mSSTables(sstables) {}
+		SizeTieredStrategy(FileParser *fp) : Strategy(fp) {}
 		virtual long compact();
-	private:
-		vector< vector<long> > mSSTables;
 };
+
+#endif

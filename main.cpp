@@ -4,19 +4,20 @@
 #include "strategy.h"
 using namespace std;
 
-vector<vector<long> > parse_file(const char *type, const char *filename)
+FileParser* parse_file(const char *type, const char *filename)
 {
 	FileParser *f;
 	if (!strcmp(type, "YCSB"))
 		f = new YCSBParser(filename);
 
-	return f->parse();
+	f->parse();
+	return f;
 }
 
-void compare_strategy(vector<vector<long> > sstables)
+void compare_strategy(FileParser *f)
 {
-	SizeTieredStrategy s(sstables);
-	GreedyStrategy g(sstables);
+	SizeTieredStrategy s(f);
+	GreedyStrategy g(f);
 	cout << "SizeTieredStrategy Compaction Cost:" << s.compact() << endl;
 	cout << "GreedyStrategy Compaction Cost:" << g.compact() << endl;
 }
@@ -24,6 +25,6 @@ void compare_strategy(vector<vector<long> > sstables)
 int main(int argc, char *argv[])
 {
 	// Create File Sets
-	vector<vector<long> > sstables = parse_file(argv[0], argv[1]);
-	compare_strategy(sstables);
+	FileParser *fparser = parse_file(argv[0], argv[1]);
+	compare_strategy(fparser);
 }

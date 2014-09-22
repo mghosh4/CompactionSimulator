@@ -3,7 +3,8 @@ CFLAGS=-g -Wno-deprecated -DDEBUG
 LDFLAGS= -lm
 SRC=\
 	strategy.cpp \
-	fileparser.cpp
+	fileparser.cpp \
+	kwaymerge.cpp
 OBJ=$(SRC:.cpp=.o)
 
 all: main
