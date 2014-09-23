@@ -3,6 +3,8 @@
 #include"constants.h"
 #include"kwaymerge.h"
 
+//test
+
 vector< vector<long> > generateCombs(int N, int K)
 {
 	vector< vector<long> > combs;
