@@ -77,7 +77,7 @@ long GreedyStrategy::compact()
 
 long SizeTieredStrategy::compact()
 {
-	
+	cout << "O!! Implement me baby!! :)" << endl;
 	return 0;
 }
 
