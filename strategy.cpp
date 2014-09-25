@@ -19,15 +19,15 @@ vector< vector<long> > generateCombs(int N, int K)
             if (bitmask[i]) oneComb.push_back(i);
         }
         combs.push_back(oneComb);
+		oneComb.clear();
     } while (prev_permutation(bitmask.begin(), bitmask.end()));
 
 	return combs;
 }
 
-vector<long> findGreedySet(vector< vector<long> > sstables, vector< vector<long> > combs, vector< vector<long> > compactSStables)
+long findGreedySet(vector< vector<long> > sstables, vector< vector<long> > combs, vector<long>& mergedSet, vector<long>& minSet)
 {
-	long minCost = INT_MAX;
-	vector<long> minSet;
+	long minCost = INT_MAX, mergeCost;
 	for (vector< vector<long> >::iterator it = combs.begin(); it != combs.end(); it++)
 	{
 		vector<long> singleComb = *it;
@@ -38,16 +38,31 @@ vector<long> findGreedySet(vector< vector<long> > sstables, vector< vector<long>
 			mergeSet.push_back(sstables[*it1]);
 		}
 
+		//cout << "Before Merge\n";
 		vector<long> output = KWayNumberMerge::merge(mergeSet, cost);
 		if (minCost == INT_MAX || minCost > output.size())
 		{
-			compactSStables = mergeSet;
 			minCost = output.size();
 			minSet = singleComb;
+			mergedSet = output;
+			mergeCost = cost;
 		}
 	}
 
-	return minSet;
+	return mergeCost;
+}
+
+void print_set1(vector< vector<long> > sets)
+{
+	for (vector< vector<long> >::iterator it = sets.begin(); it != sets.end(); it++)
+	{
+		vector<long> set = *it;
+		for (vector<long>::iterator bit = set.begin(); bit != set.end(); bit++)
+		{
+			cout << *bit << " ";
+		}
+		cout << "\n";
+	}
 }
 
 long GreedyStrategy::compact()
@@ -57,19 +72,23 @@ long GreedyStrategy::compact()
 	if (ycsbParser)
 		sstables = ycsbParser->getSStables();
 
+	//print_set1(sstables);
 	long sstableCount, cost = 0;
-
+	vector<long> output, compactSet;
 	while (sstables.size() > 1)
 	{
 		sstableCount = sstables.size();
-		compactSStables.clear();
+		compactSet.clear();
+		output.clear();
 		vector< vector<long> > combs = generateCombs(sstableCount, COMPACTION_THRESHOLD);
-		vector<long> compactSet = findGreedySet(sstables, combs, compactSStables);
-		vector<long> output = KWayNumberMerge::merge(compactSStables, cost);
+		//print_set1(combs);
+		cost += findGreedySet(sstables, combs, output, compactSet);
 		
 		//Erasing the compacted set and adding the new set
+		cout << "SStable Count:" << sstables.size() << " compact set:" << compactSet.size() << " output size:" << output.size() << endl;
 		for (int i = 0; i < compactSet.size(); i++)
 			sstables.erase(sstables.begin() + compactSet[i]);
+		cout << "SStable Count:" << sstables.size() << endl;
 
 		sstables.push_back(output);
 	}

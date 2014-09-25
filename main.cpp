@@ -18,8 +18,8 @@ void compare_strategy(FileParser *f)
 {
 	SizeTieredStrategy s(f);
 	GreedyStrategy g(f);
-	cout << "SizeTieredStrategy Compaction Cost:" << s.compact() << endl;
-	// cout << "GreedyStrategy Compaction Cost:" << g.compact() << endl;
+	//cout << "SizeTieredStrategy Compaction Cost:" << s.compact() << endl;
+	 cout << "GreedyStrategy Compaction Cost:" << g.compact() << endl;
 }
 
 void print_set(FileParser *fp)
@@ -47,6 +47,6 @@ int main(int argc, char *argv[])
 
 	// Create File Sets
 	FileParser *fparser = parse_file(argv[1], argv[2]);
-	// print_set(fparser);
+	//print_set(fparser);
 	compare_strategy(fparser);
 }
