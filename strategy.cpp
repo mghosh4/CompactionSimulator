@@ -67,7 +67,7 @@ void print_set1(vector< vector<long> > sets)
 
 long GreedyStrategy::compact()
 {
-	YCSBParser *ycsbParser = dynamic_cast<YCSBParser *>(mFileParser);
+	NumberParser *ycsbParser = dynamic_cast<NumberParser *>(mYCSBParser);
 	vector< vector<long> > sstables, compactSStables;
 	if (ycsbParser)
 		sstables = ycsbParser->getSStables();

@@ -7,23 +7,23 @@ using namespace std;
 class Strategy
 {
 	public:
-		Strategy(FileParser *fp) : mFileParser(fp) {}
+		Strategy(YCSBParser *fp) : mYCSBParser(fp) {}
 		virtual long compact() = 0;
 	protected:
-		FileParser *mFileParser;
+		YCSBParser *mYCSBParser;
 };
 
 class GreedyStrategy : public Strategy
 {
 	public:
-		GreedyStrategy(FileParser *fp) : Strategy(fp) {}
+		GreedyStrategy(YCSBParser *fp) : Strategy(fp) {}
 		virtual long compact();
 };
 
 class SizeTieredStrategy : public Strategy
 {
 	public:
-		SizeTieredStrategy(FileParser *fp) : Strategy(fp) {}
+		SizeTieredStrategy(YCSBParser *fp) : Strategy(fp) {}
 		virtual long compact();
 };
 

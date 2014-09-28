@@ -1,6 +1,6 @@
 CC=g++
 CFLAGS=-g -Wno-deprecated -DDEBUG
-LDFLAGS= -lm
+LDFLAGS= -lm #-lboost_serialization
 SRC=\
 	fileparser.cpp \
 	kwaymerge.cpp \
