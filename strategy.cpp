@@ -2,6 +2,7 @@
 #include"strategy.h"
 #include"constants.h"
 #include"kwaymerge.h"
+#include <queue>
 
 //test
 
@@ -96,9 +97,70 @@ long GreedyStrategy::compact()
 	return cost;
 }
 
+struct Comparator
+{
+  bool operator() (const vector<long> &lhs, const vector<long> &rhs) const
+  {
+    return lhs.size() > rhs.size();
+  }
+};
+
 long SizeTieredStrategy::compact()
 {
-	cout << "O!! Implement me baby!! :)" << endl;
-	return 0;
+	YCSBParser *ycsbParser = dynamic_cast<YCSBParser *>(mFileParser);
+	vector< vector<long> > sstables;
+	if (ycsbParser)
+		sstables = ycsbParser->getSStables();
+	
+	long mergeCost = 0;
+	/*
+	vector< vector<long> > p;
+	long a[2] = {1,2};
+	vector<long> a1(a, a + 2);
+	long b[3] = {1,2,3};
+	vector<long> b1(b, b+3);
+	long c[6] = {1,2,3,4,5,6};
+	vector<long> c1(c,c+6);
+	p.push_back(c1);
+	p.push_back(b1);
+	p.push_back(a1);
+
+	for(int i = 0; i < p.size();i++)
+		cout << p[i].size() << endl;
+	
+	priority_queue<vector<long>, vector< vector<long> >, Comparator> fileHeap(p.begin(), p.end());
+
+	cout << "asdasd " << fileHeap.top().size()<< endl;
+	fileHeap.pop();	
+	cout << "asdasd " << fileHeap.top().size()<< endl;	
+	fileHeap.pop();	
+	cout << "asdasd " << fileHeap.top().size()<< endl;	
+	fileHeap.pop();	
+	*/
+	
+	if(sstables.size() == 0)
+		return mergeCost;
+
+	priority_queue<vector<long>, vector< vector<long> >, Comparator> fileHeap(sstables.begin(), sstables.end());
+	
+	while(fileHeap.size() >= 2) {
+		vector< vector<long> > toMergeSet;
+		long dummy_cost; //useless variable
+		
+		vector<long> f1 = fileHeap.top();
+		fileHeap.pop();
+		vector<long> f2 = fileHeap.top();
+		fileHeap.pop();
+		toMergeSet.push_back(f1);
+		toMergeSet.push_back(f2);
+		mergeCost = mergeCost + f1.size() + f2.size();
+		
+		vector<long> output = KWayNumberMerge::merge(toMergeSet, dummy_cost);
+		fileHeap.push(output);
+
+	}
+	mergeCost += fileHeap.top().size();
+
+	return mergeCost;
 }
 
