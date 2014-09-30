@@ -102,7 +102,7 @@ vector<long> KWayNumberMerge::merge(vector< vector<long> > sets, long &cost)
 	}
 
 	//print_set3(output);
-	cost += output.size();
+	//cost += output.size();
 	//cout << "Cost:" << cost << endl;
 
 	return output;

@@ -2,9 +2,11 @@ CC=g++
 CFLAGS=-g -Wno-deprecated -DDEBUG
 LDFLAGS= -lm #-lboost_serialization
 SRC=\
+	timer.cpp \
 	fileparser.cpp \
 	kwaymerge.cpp \
-	strategy.cpp
+	sizetierstrategy.cpp \
+	greedystrategy.cpp
 OBJ=$(SRC:.cpp=.o)
 
 all: main

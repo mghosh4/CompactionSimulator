@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "fileparser.h"
 #include "strategy.h"
+#include "timer.h"
 using namespace std;
 
 YCSBParser* parse_file(const char *type, const char *filename)
@@ -18,8 +19,15 @@ void compare_strategy(YCSBParser *f)
 {
 	SizeTieredStrategy s(f);
 	GreedyStrategy g(f);
-	//cout << "SizeTieredStrategy Compaction Cost:" << s.compact() << endl;
-	 cout << "GreedyStrategy Compaction Cost:" << g.compact() << endl;
+	Timer tm;
+	tm.start();
+	cout << "SizeTieredStrategy Compaction Cost:" << s.compact() << endl;
+	tm.stop();
+	cout << "Time taken to complete Size Tiered:" << tm.duration() << endl;
+	tm.start();
+	cout << "GreedyStrategy Compaction Cost:" << g.compact() << endl;
+	tm.stop();
+	cout << "Time taken to complete Greedy:" << tm.duration() << endl;
 }
 
 void print_set(YCSBParser *fp)
