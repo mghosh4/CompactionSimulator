@@ -1,21 +1,21 @@
 CC=g++
 CFLAGS=-g -Wno-deprecated -DDEBUG
-LDFLAGS= -lm #-lboost_serialization
+LDFLAGS= -lm -lboost_serialization
 SRC=\
-	timer.cpp \
-	fileparser.cpp \
-	kwaymerge.cpp \
-	sizetierstrategy.cpp \
-	greedystrategy.cpp
+	src/timer.cpp \
+	src/fileparser.cpp \
+	src/kwaymerge.cpp \
+	src/sizetierstrategy.cpp \
+	src/greedystrategy.cpp
 OBJ=$(SRC:.cpp=.o)
 
 all: main
 
 main: $(OBJ)
-	$(CC) $(CFLAGS) main.cpp $^ -o $@ $(LDFLAGS)
+	$(CC) $(CFLAGS) src/main.cpp $^ -o $@ $(LDFLAGS)
 
 %.o: %.cpp
 	$(CC) $(CFLAGS) $< -c -o $@
 
 clean:
-	rm -f *.o main
+	rm -f src/*.o main
