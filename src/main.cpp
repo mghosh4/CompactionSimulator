@@ -1,33 +1,35 @@
 #include <iostream>
-#include <stdio.h>
-#include "fileparser.h"
-#include "strategy.h"
-#include "timer.h"
+#include "parser/fileparser.h"
+#include "compaction/compaction.h"
 using namespace std;
 
-YCSBParser* parse_file(const char *type, const char *filename)
+Parser* parse_file(const char *type, const char *filename)
 {
-	YCSBParser *f;
-	if (!strcmp(type, "YCSB"))
+	Parser *f;
+	if (!strcmp(type, "ycsbnumber"))
 		f = new NumberParser(filename);
+	else if (!strcmp(type, "ycsbfile"))
+		f = new FileParser(filename);
 
 	f->parse();
 	return f;
 }
 
-void compare_strategy(YCSBParser *f)
+void compare_strategy(Parser *f, const char *type)
 {
-	SizeTieredStrategy s(f);
-	GreedyStrategy g(f);
-	Timer tm;
-	tm.start();
-	cout << "SizeTieredStrategy Compaction Cost:" << s.compact() << endl;
-	tm.stop();
-	cout << "Time taken to complete Size Tiered:" << tm.duration() << endl;
-	tm.start();
-	cout << "GreedyStrategy Compaction Cost:" << g.compact() << endl;
-	tm.stop();
-	cout << "Time taken to complete Greedy:" << tm.duration() << endl;
+	Compaction *comp;
+	if (!strcmp(type, "ycsbnumber"))
+	{
+		NumberParser *np = dynamic_cast<NumberParser *>(f);
+		comp = new NumberCompaction(np->getSStables());
+	}
+	else if (!strcmp(type, "ycsbfile"))
+	{
+		FileParser *fp = dynamic_cast<FileParser *>(f);
+		comp = new FileCompaction(fp->getNumFiles());
+	}
+
+	comp->compare();
 }
 
 void print_set(YCSBParser *fp)
@@ -49,12 +51,12 @@ int main(int argc, char *argv[])
 {
 	if (argc < 2)
 	{
-		cout << "Usage ./main YCSB <filename>\n";
-		cout << "Current type supported is YCSB\n";
+		cout << "Usage ./main <type> <filename>\n";
+		cout << "Current types supported are ycsbnumber, ycsbfile\n";
 	}
 
 	// Create File Sets
-	YCSBParser *fparser = parse_file(argv[1], argv[2]);
+	Parser *fparser = parse_file(argv[1], argv[2]);
 	//print_set(fparser);
-	compare_strategy(fparser);
+	compare_strategy(fparser, argv[1]);
 }

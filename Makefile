@@ -2,11 +2,15 @@ CC=g++
 CFLAGS=-g -Wno-deprecated -DDEBUG
 LDFLAGS= -lm -lboost_serialization
 SRC=\
-	src/timer.cpp \
-	src/fileparser.cpp \
-	src/kwaymerge.cpp \
-	src/sizetierstrategy.cpp \
-	src/greedystrategy.cpp
+	src/utilities/timer.cpp \
+	src/utilities/kwaymerge.cpp \
+	src/parser/fileparser.cpp \
+	src/strategy/sizetierednumberstrategy.cpp \
+	src/strategy/greedynumberstrategy.cpp \
+	src/strategy/sizetieredfilestrategy.cpp \
+	src/strategy/greedyfilestrategy.cpp \
+	src/compaction/compaction.cpp 
+
 OBJ=$(SRC:.cpp=.o)
 
 all: main
