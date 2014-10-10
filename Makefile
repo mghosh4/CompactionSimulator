@@ -4,7 +4,7 @@ LDFLAGS= -lm -lboost_serialization
 SRC=\
 	src/utilities/timer.cpp \
 	src/utilities/kwaymerge.cpp \
-	src/parser/fileparser.cpp \
+	src/parser/ycsbparser.cpp \
 	src/strategy/sizetierednumberstrategy.cpp \
 	src/strategy/greedynumberstrategy.cpp \
 	src/strategy/sizetieredfilestrategy.cpp \
@@ -22,4 +22,4 @@ main: $(OBJ)
 	$(CC) $(CFLAGS) $< -c -o $@
 
 clean:
-	rm -f src/*.o main
+	rm -f $(OBJ) main
