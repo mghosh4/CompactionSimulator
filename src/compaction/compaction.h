@@ -1,8 +1,9 @@
 #ifndef COMPACTION_H
 #define COMPACTION_H
 
-#include "../strategy/strategy.h"
 #include <vector>
+#include "../strategy/strategy.h"
+#include "../sstable/sstable.h"
 using namespace std;
 
 class Compaction
@@ -24,7 +25,7 @@ class NumberCompaction : public Compaction
 class FileCompaction : public Compaction
 {
 	public:
-		FileCompaction(long numFiles);
+		FileCompaction(vector<SStable> sstables, long numFiles);
 };
 
 #endif

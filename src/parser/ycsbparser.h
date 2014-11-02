@@ -1,9 +1,10 @@
-#ifndef FILEPARSER_H
-#define FILEPARSER_H
+#ifndef YCSBPARSER_H
+#define YCSBPARSER_H
 
 #include <map>
 #include <vector>
 #include "parser.h"
+#include "../sstable/sstable.h"
 using namespace std;
 
 class YCSBParser: public Parser
@@ -32,10 +33,12 @@ class NumberParser: public YCSBParser
 class FileParser: public YCSBParser
 {
 	public:
-		FileParser(const char *filename): YCSBParser(filename), mNumFiles(0) {}
+		FileParser(const char *filename): YCSBParser(filename), mNumFiles(1) {}
 		virtual void dump(vector<string> sstable);
+		vector<SStable> getSStables() { return mSStables; }
 		long getNumFiles() { return mNumFiles; }
 	private:
+		vector<SStable> mSStables;
 		long mNumFiles;
 };
 

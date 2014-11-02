@@ -15,7 +15,7 @@ void Compaction::compare()
 	tm.start();
 	cout << "GreedyStrategy Compaction Cost:" << g->compact() << endl;
 	tm.stop();
-	cout << "Time taken to complete Greedy:" << tm.duration() << endl;	
+	cout << "Time taken to complete Greedy:" << tm.duration() << endl;
 }
 
 NumberCompaction::NumberCompaction(vector<vector<long> > sstables)
@@ -25,9 +25,9 @@ NumberCompaction::NumberCompaction(vector<vector<long> > sstables)
 	g = new GreedyNumberStrategy(nsOpts); 
 }
 
-FileCompaction::FileCompaction(long numFiles)
+FileCompaction::FileCompaction(vector<SStable> sstables, long numFiles)
 {
-	FileStrategyOptions fsOpts(numFiles);
+	FileStrategyOptions fsOpts(sstables, numFiles);
 	s = new SizeTieredFileStrategy(fsOpts);
 	g = new GreedyFileStrategy(fsOpts); 
 }

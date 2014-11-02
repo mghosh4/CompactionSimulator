@@ -1,61 +1,21 @@
 #include <iostream>
-#include <sstream>
 #include <map>
 #include "numberstrategy.h"
 #include "../utilities/constants.h"
+#include "../utilities/utilities.h"
 #include "../utilities/kwaymerge.h"
 
-struct classcomp {
-  	bool operator() (const string& lhs, const string& rhs) const
-  	{
-		if (lhs.compare(rhs) < 0)
-			return true;
-		else
-			return false;
-	}
-};
-
-vector< vector<long> > generateCombs(vector<long> toCombine, int K)
+void print_set2(map<string, long> costMap)
 {
-	vector< vector<long> > combs;
-	vector<long> oneComb;
-	int N = toCombine.size();
-    string bitmask(K, 1); // K leading 1's
-    bitmask.resize(N, 0); // N-K trailing 0's
- 
-    // print integers and permute bitmask
-    do {
-        for (int i = 0; i < N; ++i) // [0..N-1] integers
-        {
-            if (bitmask[i]) oneComb.push_back(toCombine[i]);
-        }
-        combs.push_back(oneComb);
-		oneComb.clear();
-    } while (prev_permutation(bitmask.begin(), bitmask.end()));
-
-	return combs;
-}
-
-string toString(vector<long> idArray)
-{
-	sort(idArray.begin(), idArray.end());
-	stringstream sstm;
-	for (vector<long>::iterator it = idArray.begin(); it != idArray.end(); it++)
-		sstm << *it << ":";
-	return sstm.str();	
-}
-
-void print_set2(map<string, long, classcomp> costMap)
-{
-	for (map<string, long, classcomp>::iterator it = costMap.begin(); it != costMap.end(); it++)
+	for (map<string, long>::iterator it = costMap.begin(); it != costMap.end(); it++)
 	{
 		cout << it->first << " " << it->second << "\n";
 	}
 }
 
-void findGreedySet(map<long, vector<long> > sstables, vector< vector<long> > combs, vector<long>& minSet, map<string, long, classcomp>& costMap)
+void findGreedySet(map<long, vector<long> > sstables, vector< vector<long> > combs, vector<long>& minSet, map<string, long>& costMap, int indexMap[])
 {
-	cout << "Size of costMap " << costMap.size() << " sstable size " << sstables.size() << endl;
+	//cout << "Size of costMap " << costMap.size() << " sstable size " << sstables.size() << endl;
 	long minCost = INT_MAX, mergeCost;
 	//long count = 0;
 	for (vector< vector<long> >::iterator it = combs.begin(); it != combs.end(); it++)
@@ -65,18 +25,27 @@ void findGreedySet(map<long, vector<long> > sstables, vector< vector<long> > com
 		vector< vector<long> > mergeSet;
 		vector<long> idArray;
 		long cost = 0;
-		for (vector<long>::iterator it1 = singleComb.begin(); it1 != singleComb.end(); it1++)
+		vector<long>::iterator it1 = singleComb.begin();
+		for (; it1 != singleComb.end(); it1++)
 		{
-			idArray.push_back(*it1);
-			mergeSet.push_back(sstables[*it1]);
+			//cout << *it1 << endl;
+			if (*it1 >= sstables.size())
+				break;
+			idArray.push_back(indexMap[*it1]);
+			mergeSet.push_back(sstables[indexMap[*it1]]);
 		}
 
+		// Case when we hit upon an index which is outside the current range of sstables
+		if (it1 != singleComb.end() && *it1 >= sstables.size())
+			continue;
+		//cout << "Before Merge" << sstables.size() << endl;
+
 		string idStr = toString(idArray);
-		map<string, long, classcomp>::iterator mapIt = costMap.find(idStr);
+		map<string, long>::iterator mapIt = costMap.find(idStr);
 		if (mapIt == costMap.end())
 		{
 			//count++;
-			//cout << "Before Merge\n";
+			//cout << "After Merge\n";
 			vector<long> output = KWayNumberMerge::merge(mergeSet, cost);
 			costMap.insert(pair<string, long>(idStr, output.size()));
 		}
@@ -111,11 +80,17 @@ long GreedyNumberStrategy::compact()
 	sets = mOpts.getSStables();
 
 	map<long, vector<long> > sstables;
-	map<string, long, classcomp> costMap;
+	map<string, long> costMap;
 	long lastId = 0;
 
+	vector< vector<long> > combs = generateCombs(sets.size(), COMPACTION_THRESHOLD);
+	int indexMap[sets.size()];
+	int indexMapCount = sets.size();
 	for (vector< vector<long> >::iterator it = sets.begin(); it != sets.end(); it++)
+	{
+		indexMap[lastId] = lastId;
 		sstables.insert(pair<long, vector<long> >(lastId++, *it));
+	}
 
 	sets.clear();
 
@@ -123,28 +98,42 @@ long GreedyNumberStrategy::compact()
 	long cost = 0;
 	while (sstables.size() > 1)
 	{
-		vector<long> toCombine, compactSet;
-		for (map<long, vector<long> >::iterator it = sstables.begin(); it != sstables.end(); it++)
-			toCombine.push_back(it->first);
+		vector<long> compactSet;
+		/*cout << "Index Map:";
+		for (int i = 0; i < indexMapCount; i++)
+			cout << indexMap[i] << " ";
+		cout << "\n";*/
 
-		vector< vector<long> > combs = generateCombs(toCombine, COMPACTION_THRESHOLD);
 		//print_set1(combs);
-		findGreedySet(sstables, combs, compactSet, costMap);
+		findGreedySet(sstables, combs, compactSet, costMap, indexMap);
 		
 		//Erasing the compacted set and adding the new set
 		vector< vector<long> > toMerge;
+		//cout << "Compact Set:" << compactSet.size() << endl;
 		for (int i = 0; i < compactSet.size(); i++)
 		{
-			toMerge.push_back(sstables[compactSet[i]]);
-			sstables.erase(sstables.find(compactSet[i]));
+			//cout << "Remove:" << indexMap[compactSet[i]] << endl;
+			toMerge.push_back(sstables[indexMap[compactSet[i]]]);
+			sstables.erase(sstables.find(indexMap[compactSet[i]]));
 		}
 		//cout << "SStable Count:" << sstables.size() << endl;
 		vector<long> output = KWayNumberMerge::merge(toMerge, cost);
 		//cout << "SStable Count:" << sstables.size() << " compact set:" << compactSet.size() << " output size:" << output.size() << endl;
 
-		sstables.insert(pair<long, vector<long> >(lastId++, output));
+		//cout << "Compact Set:";
+		sstables.insert(pair<long, vector<long> >(lastId, output));
+		sort(compactSet.begin(), compactSet.end());
+		for (int i = compactSet.size() - 1; i >= 0; i--)
+		{
+			//cout << compactSet[i] << " ";
+			for (int j = compactSet[i]; j < indexMapCount; j++)
+				indexMap[j] = indexMap[j+1];
+			indexMapCount--;
+		}
+		//cout << "\n";
+
+		indexMap[indexMapCount++] = lastId++;
 	}
-		
+
 	return cost;
 }
-

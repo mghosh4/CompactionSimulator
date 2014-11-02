@@ -25,13 +25,12 @@ long SizeTieredNumberStrategy::compact()
 	
 	while(fileHeap.size() >= 2) {
 		vector< vector<long> > toMergeSet;
-		
-		vector<long> f1 = fileHeap.top();
-		fileHeap.pop();
-		vector<long> f2 = fileHeap.top();
-		fileHeap.pop();
-		toMergeSet.push_back(f1);
-		toMergeSet.push_back(f2);
+
+		for (int i = 0; i < COMPACTION_THRESHOLD; i++)
+		{
+			toMergeSet.push_back(fileHeap.top());
+			fileHeap.pop();
+		}
 		
 		vector<long> output = KWayNumberMerge::merge(toMergeSet, mergeCost);
 		//print_set1(toMergeSet);

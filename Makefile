@@ -2,7 +2,9 @@ CC=g++
 CFLAGS=-g -Wno-deprecated -DDEBUG
 LDFLAGS= -lm -lboost_serialization
 SRC=\
+	src/external/murmur3.cpp \
 	src/utilities/timer.cpp \
+	src/utilities/utilities.cpp \
 	src/utilities/kwaymerge.cpp \
 	src/parser/ycsbparser.cpp \
 	src/strategy/sizetierednumberstrategy.cpp \

@@ -26,15 +26,17 @@ void compare_strategy(Parser *f, const char *type)
 	else if (!strcmp(type, "ycsbfile"))
 	{
 		FileParser *fp = dynamic_cast<FileParser *>(f);
-		comp = new FileCompaction(fp->getNumFiles());
+		comp = new FileCompaction(fp->getSStables(), fp->getNumFiles());
 	}
 
 	comp->compare();
 }
 
-void print_set(YCSBParser *fp)
+void print_set(Parser *fp)
 {
 	NumberParser *yp = dynamic_cast<NumberParser *>(fp);
+	if (!yp)
+		return;
 	vector< vector<long> > sets = yp->getSStables();
 	for (vector< vector<long> >::iterator it = sets.begin(); it != sets.end(); it++)
 	{
@@ -57,6 +59,7 @@ int main(int argc, char *argv[])
 
 	// Create File Sets
 	Parser *fparser = parse_file(argv[1], argv[2]);
+	cout << "Parsing Completed\n";
 	//print_set(fparser);
 	compare_strategy(fparser, argv[1]);
 }

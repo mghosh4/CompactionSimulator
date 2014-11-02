@@ -1,15 +1,19 @@
 #ifndef FILESTRATEGY_H
 #define FILESTRATEGY_H
 
+#include <vector>
 #include "strategy.h"
+#include "../sstable/sstable.h"
 
 class FileStrategyOptions
 {
 	public:
-		FileStrategyOptions(long numFiles) : mNumFiles(numFiles) {}
+		FileStrategyOptions(vector<SStable> sstables, long numFiles) : mSStables(sstables), mNumFiles(numFiles) {}
+		vector<SStable> getSStables() {return mSStables;}
 		long getNumFiles() {return mNumFiles;}
 	private:
 		long mNumFiles;
+		vector<SStable> mSStables;
 };
 
 class SizeTieredFileStrategy : public SizeTieredStrategy

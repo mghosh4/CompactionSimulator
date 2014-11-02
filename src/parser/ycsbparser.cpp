@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/string.hpp>
 
@@ -76,31 +77,36 @@ void NumberParser::dump(vector<string> sstable)
 		map<string, long>::iterator it = mKeyMap.find(key);
 		if (it == mKeyMap.end())
 			mKeyMap.insert(pair<string, long>(key, mKeyMap.size()));
-
 		sortedSStable.push_back(mKeyMap.find(key)->second);
 	}
 	sort(sortedSStable.begin(), sortedSStable.end());
+	vector<long>::iterator it = unique(sortedSStable.begin(), sortedSStable.end());
+	sortedSStable.resize(distance(sortedSStable.begin(), it));
 	mSStables.push_back(sortedSStable);
 }
 
-struct classcomp
-{
-	bool operator()(string str1, string str2)
-	{
-		return str1.compare(str2);
-	}
-};	
-
 void FileParser::dump(vector<string> sstable)
 {
-	map<string, string, classcomp> sortedSStable;
+	map<string, string> sortedSStable;
+	SStable table;
+	ostringstream ostr;
+
+	ostr << sstablename << mNumFiles++;
+	table.filename = ostr.str();
 	for (vector<string>::iterator it = sstable.begin(); it != sstable.end(); it++)
 	{
 		string key = parse_line(*it);
-		sortedSStable.insert(pair<string, string>(key, *it));
+		if (sortedSStable.find(key) == sortedSStable.end())
+			sortedSStable.insert(pair<string, string>(key, *it));
 	}
 
-	char filename[100];
-	sprintf(filename, "File-%d.db", mNumFiles++);
-	Save<map<string,string, classcomp> >(string(filename), sortedSStable);			
+	ofstream fout(table.filename.c_str());
+	for (map<string, string>::iterator it = sortedSStable.begin(); it != sortedSStable.end(); it++)
+	{
+		table.hll.add(it->first.c_str(), it->first.length());
+		fout << it->first << endl;
+	}
+	table.keyCount = sortedSStable.size();
+	mSStables.push_back(table);
+	fout.close();
 }
