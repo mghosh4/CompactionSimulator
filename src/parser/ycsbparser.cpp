@@ -1,8 +1,8 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include <boost/serialization/map.hpp>
-#include <boost/serialization/string.hpp>
+//#include <boost/serialization/map.hpp>
+//#include <boost/serialization/string.hpp>
 
 #include "ycsbparser.h"
 #include "../utilities/constants.h"
@@ -44,6 +44,7 @@ void YCSBParser::parse()
 			}
 
 		}
+		dump(sstable);
 		myfile.close();
 	}
 	else

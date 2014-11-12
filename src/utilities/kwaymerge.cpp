@@ -115,7 +115,7 @@ vector<long> KWayNumberMerge::merge(vector< vector<long> > sstables, long &cost)
 	}
 
 	//print_set3(output);
-	//cost += output.size();
+	cost += output.size();
 	//cout << "Cost:" << output.size() << endl;
 
 	return output;

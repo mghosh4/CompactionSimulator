@@ -20,4 +20,6 @@ vector< vector<long> > generateCombs(int N, int K);
 
 string toString(vector<long> idArray);
 
+void print_set(vector<long> set);
+
 #endif

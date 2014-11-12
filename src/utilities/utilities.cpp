@@ -31,3 +31,12 @@ string toString(vector<long> idArray)
 		sstm << *it << ":";
 	return sstm.str();	
 }
+
+void print_set(vector<long> set)
+{
+	for (vector<long>::iterator it = set.begin(); it != set.end(); it++)
+	{
+		cout << *it << ",";
+	}
+	cout << "\n";
+}

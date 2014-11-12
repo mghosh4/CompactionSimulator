@@ -60,6 +60,6 @@ int main(int argc, char *argv[])
 	// Create File Sets
 	Parser *fparser = parse_file(argv[1], argv[2]);
 	cout << "Parsing Completed\n";
-	//print_set(fparser);
+	print_set(fparser);
 	compare_strategy(fparser, argv[1]);
 }

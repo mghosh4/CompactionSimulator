@@ -5,7 +5,7 @@
 #include "../utilities/utilities.h"
 #include "../utilities/kwaymerge.h"
 
-void print_set2(map<string, long> costMap)
+void print_cost_map(map<string, long> &costMap)
 {
 	for (map<string, long>::iterator it = costMap.begin(); it != costMap.end(); it++)
 	{
@@ -47,7 +47,7 @@ void findGreedySet(map<long, vector<long> > sstables, vector< vector<long> > com
 			//count++;
 			//cout << "After Merge\n";
 			vector<long> output = KWayNumberMerge::merge(mergeSet, cost);
-			costMap.insert(pair<string, long>(idStr, output.size()));
+			costMap.insert(pair<string, long>(idStr, cost));
 		}
 
 		mapIt = costMap.find(idStr);
@@ -58,20 +58,17 @@ void findGreedySet(map<long, vector<long> > sstables, vector< vector<long> > com
 		}
 	}
 	//cout << "Size of costMap " << costMap.size() << " sstable size " << sstables.size() <<  " count " << count << endl;
-	//print_set2(costMap);
+	//print_cost_map(costMap);
 }
 
-void print_set1(vector< vector<long> > sets)
+void print_sets(map<long, vector<long> > sets)
 {
-	for (vector< vector<long> >::iterator it = sets.begin(); it != sets.end(); it++)
+	for (map<long, vector<long> >::iterator it = sets.begin(); it != sets.end(); it++)
 	{
-		vector<long> set = *it;
-		for (vector<long>::iterator bit = set.begin(); bit != set.end(); bit++)
-		{
-			cout << *bit << " ";
-		}
-		cout << "\n";
+		cout << "Index:" << it->first << " Size: " << it->second.size() << endl;
+		print_set(it->second);
 	}
+	cout << "\n";
 }
 
 long GreedyNumberStrategy::compact()
@@ -94,8 +91,11 @@ long GreedyNumberStrategy::compact()
 
 	sets.clear();
 
-	//print_set1(sstables);
-	long cost = 0;
+	long cost = 0, count = 1;
+	cout << "=====================================================\n";
+	cout << "Iteration " << count << endl;
+	cout << "=====================================================\n";
+	print_sets(sstables);
 	while (sstables.size() > 1)
 	{
 		vector<long> compactSet;
@@ -104,20 +104,21 @@ long GreedyNumberStrategy::compact()
 			cout << indexMap[i] << " ";
 		cout << "\n";*/
 
-		//print_set1(combs);
 		findGreedySet(sstables, combs, compactSet, costMap, indexMap);
 		
 		//Erasing the compacted set and adding the new set
 		vector< vector<long> > toMerge;
-		//cout << "Compact Set:" << compactSet.size() << endl;
+		cout << "Compact Set:";
 		for (int i = 0; i < compactSet.size(); i++)
 		{
-			//cout << "Remove:" << indexMap[compactSet[i]] << endl;
+			cout << indexMap[compactSet[i]] << " "; 
 			toMerge.push_back(sstables[indexMap[compactSet[i]]]);
 			sstables.erase(sstables.find(indexMap[compactSet[i]]));
 		}
+		cout << "\n";
 		//cout << "SStable Count:" << sstables.size() << endl;
 		vector<long> output = KWayNumberMerge::merge(toMerge, cost);
+		cout << "Iteration Cost:" << count++ << " " << cost << endl;
 		//cout << "SStable Count:" << sstables.size() << " compact set:" << compactSet.size() << " output size:" << output.size() << endl;
 
 		//cout << "Compact Set:";
@@ -133,6 +134,10 @@ long GreedyNumberStrategy::compact()
 		//cout << "\n";
 
 		indexMap[indexMapCount++] = lastId++;
+		cout << "=====================================================\n";
+		cout << "Iteration " << count << endl;
+		cout << "=====================================================\n";
+		print_sets(sstables);
 	}
 
 	return cost;
