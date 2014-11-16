@@ -14,6 +14,7 @@ class Compaction
 	protected:
 		SizeTieredStrategy *s;
 		GreedyStrategy *g;
+		BalancedTreeStrategy *b;
 };
 
 class NumberCompaction : public Compaction

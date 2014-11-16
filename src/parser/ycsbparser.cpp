@@ -44,7 +44,8 @@ void YCSBParser::parse()
 			}
 
 		}
-		dump(sstable);
+		if (sstable.size())
+			dump(sstable);
 		myfile.close();
 	}
 	else

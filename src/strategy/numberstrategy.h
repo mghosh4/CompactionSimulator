@@ -32,4 +32,13 @@ class GreedyNumberStrategy : public GreedyStrategy
 		NumberStrategyOptions mOpts;
 };
 
+class BalancedTreeNumberStrategy : public BalancedTreeStrategy
+{
+	public:
+		BalancedTreeNumberStrategy(NumberStrategyOptions& nsOpts) : mOpts(nsOpts) {}
+		virtual long compact();
+	private:
+		NumberStrategyOptions mOpts;
+};
+
 #endif

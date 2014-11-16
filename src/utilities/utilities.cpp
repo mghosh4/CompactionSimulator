@@ -32,6 +32,28 @@ string toString(vector<long> idArray)
 	return sstm.str();	
 }
 
+template <class T, class S, class C>
+S& Container(priority_queue<T, S, C>& q) {
+    struct HackedQueue : private priority_queue<T, S, C> {
+        static S& Container(priority_queue<T, S, C>& q) {
+            return q.*&HackedQueue::c;
+        }
+    };
+    return HackedQueue::Container(q);
+}
+
+void print_sets(priority_queue<vector<long>, vector< vector<long> >, Comparator> fileHeap)
+{
+	vector< vector<long> > &sets = Container(fileHeap);
+
+	for (vector< vector<long> >::iterator it = sets.begin(); it != sets.end(); it++)
+	{
+		cout << "Count:" << it->size() << endl;
+		print_set(*it);
+	}
+	cout << "\n";
+}
+
 void print_set(vector<long> set)
 {
 	for (vector<long>::iterator it = set.begin(); it != set.end(); it++)

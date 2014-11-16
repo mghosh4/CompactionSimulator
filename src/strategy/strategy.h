@@ -22,4 +22,11 @@ class SizeTieredStrategy : public Strategy
 		virtual long compact() = 0;
 };
 
+class BalancedTreeStrategy : public Strategy
+{
+	public:
+		BalancedTreeStrategy() {}
+		virtual long compact() = 0;
+};
+
 #endif

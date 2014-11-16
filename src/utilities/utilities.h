@@ -14,11 +14,24 @@ int Save(const string fname, const ClassTo &c)
     return 0;
 }*/
 #include <string>
+#include <vector>
+#include <queue>
 using namespace std;
+
+struct Comparator
+{
+	bool operator() (const vector<long> &lhs, const vector<long> &rhs) const
+	{
+		return lhs.size() > rhs.size();
+	}
+};
+
 
 vector< vector<long> > generateCombs(int N, int K);
 
 string toString(vector<long> idArray);
+
+void print_sets(priority_queue<vector<long>, vector< vector<long> >, Comparator> fileHeap);
 
 void print_set(vector<long> set);
 

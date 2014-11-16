@@ -1,6 +1,6 @@
 CC=g++
 CFLAGS=-g -Wno-deprecated -DDEBUG
-LDFLAGS= -lm #-lboost_serialization
+LDFLAGS= -lm -lboost_thread-mt
 SRC=\
 	src/external/murmur3.cpp \
 	src/utilities/timer.cpp \
@@ -9,6 +9,7 @@ SRC=\
 	src/parser/ycsbparser.cpp \
 	src/strategy/sizetierednumberstrategy.cpp \
 	src/strategy/greedynumberstrategy.cpp \
+	src/strategy/balancedtreenumberstrategy.cpp \
 	src/strategy/sizetieredfilestrategy.cpp \
 	src/strategy/greedyfilestrategy.cpp \
 	src/compaction/compaction.cpp 

@@ -47,7 +47,7 @@ void findGreedySet(map<long, vector<long> > sstables, vector< vector<long> > com
 			//count++;
 			//cout << "After Merge\n";
 			vector<long> output = KWayNumberMerge::merge(mergeSet, cost);
-			costMap.insert(pair<string, long>(idStr, cost));
+			costMap.insert(pair<string, long>(idStr, output.size()));
 		}
 
 		mapIt = costMap.find(idStr);
@@ -118,7 +118,7 @@ long GreedyNumberStrategy::compact()
 		cout << "\n";
 		//cout << "SStable Count:" << sstables.size() << endl;
 		vector<long> output = KWayNumberMerge::merge(toMerge, cost);
-		cout << "Iteration Cost:" << count++ << " " << cost << endl;
+		cout << "Iteration Cost:" << count++ << " " << output.size() << endl;
 		//cout << "SStable Count:" << sstables.size() << " compact set:" << compactSet.size() << " output size:" << output.size() << endl;
 
 		//cout << "Compact Set:";

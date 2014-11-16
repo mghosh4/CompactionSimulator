@@ -6,7 +6,7 @@
 class bloom_filter_wrpr : public bloom_filter
 {
 public:
-	bloom_filter_wrpr()
+	bloom_filter_wrpr(const bloom_parameters& p): bloom_filter(p)
 	{
 		
 	}
