@@ -1,19 +1,24 @@
 #!/bin/sh
 source setup.conf
+rc=$recordcount
+oc=$operationcount
 for dist in "${distribution[@]}"
 do
-	for rc in "${recordcount[@]}"
+	for up in "${updateproportion[@]}"
 	do
-		for oc in "${operationcount[@]}"
-		do
-			echo "Distribution:" $dist " Record Count:" $rc " Operation Count:" $oc
-			if [ ! -f testfiles/testfile-$dist-$rc-$oc.txt ]; then
-				$YCSB_HOME/bin/ycsb load basic -p recordcount=$rc -P $YCSB_HOME/workloads/$dist > testfiles/testfile-$dist-$rc-$oc.txt
-				$YCSB_HOME/bin/ycsb run basic -p recordcount=$rc -p operationcount=$oc -P $YCSB_HOME/workloads/$dist >> testfiles/testfile-$dist-$rc-$oc.txt
+	#for rc in "${recordcount[@]}"
+	#do
+	#	for oc in "${operationcount[@]}"
+#		do
+			ip=$((100 - $up))
+			echo "Distribution:" $dist " Record Count:" $rc " Operation Count:" $oc "Update Proportion:" $up "Insert Proportion" $ip
+			if [ ! -f testfiles/testfile-$dist-$rc-$oc-$up.txt ]; then
+				$YCSB_HOME/bin/ycsb load basic -p recordcount=$rc -P $YCSB_HOME/workloads/$dist > testfiles/testfile-$dist-$rc-$oc-$up.txt
+				$YCSB_HOME/bin/ycsb run basic -p recordcount=$rc -p operationcount=$oc -p updateproportion=$up -p insertproportion=$ip -P $YCSB_HOME/workloads/$dist >> testfiles/testfile-$dist-$rc-$oc-$up.txt
 			fi
 			#./main ycsbfile testfiles/testfile-$j-$k.txt
-			./main ycsbnumber testfiles/testfile-$dist-$rc-$oc.txt > result/result-$dist-$rc-$oc.txt
+			./main ycsbnumber testfiles/testfile-$dist-$rc-$oc-$up.txt > result/result-$dist-$rc-$oc-$up.txt
 			#rm logs/*
-		done
+#		done
 	done
 done

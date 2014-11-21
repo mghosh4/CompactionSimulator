@@ -9,7 +9,8 @@ SRC=\
 	src/parser/ycsbparser.cpp \
 	src/strategy/sizetierednumberstrategy.cpp \
 	src/strategy/greedynumberstrategy.cpp \
-	src/strategy/balancedtreenumberstrategy.cpp \
+	src/strategy/btsizetierednumberstrategy.cpp \
+	src/strategy/btgreedynumberstrategy.cpp \
 	src/strategy/sizetieredfilestrategy.cpp \
 	src/strategy/greedyfilestrategy.cpp \
 	src/compaction/compaction.cpp 

@@ -32,10 +32,19 @@ class GreedyNumberStrategy : public GreedyStrategy
 		NumberStrategyOptions mOpts;
 };
 
-class BalancedTreeNumberStrategy : public BalancedTreeStrategy
+class BTSizeTieredNumberStrategy : public BTSizeTieredStrategy
 {
 	public:
-		BalancedTreeNumberStrategy(NumberStrategyOptions& nsOpts) : mOpts(nsOpts) {}
+		BTSizeTieredNumberStrategy(NumberStrategyOptions& nsOpts) : mOpts(nsOpts) {}
+		virtual long compact();
+	private:
+		NumberStrategyOptions mOpts;
+};
+
+class BTGreedyNumberStrategy : public BTGreedyStrategy
+{
+	public:
+		BTGreedyNumberStrategy(NumberStrategyOptions& nsOpts) : mOpts(nsOpts) {}
 		virtual long compact();
 	private:
 		NumberStrategyOptions mOpts;

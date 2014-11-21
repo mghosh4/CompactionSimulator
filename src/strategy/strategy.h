@@ -22,10 +22,17 @@ class SizeTieredStrategy : public Strategy
 		virtual long compact() = 0;
 };
 
-class BalancedTreeStrategy : public Strategy
+class BTSizeTieredStrategy : public Strategy
 {
 	public:
-		BalancedTreeStrategy() {}
+		BTSizeTieredStrategy() {}
+		virtual long compact() = 0;
+};
+
+class BTGreedyStrategy : public Strategy
+{
+	public:
+		BTGreedyStrategy() {}
 		virtual long compact() = 0;
 };
 

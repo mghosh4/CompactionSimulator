@@ -17,7 +17,11 @@ void Compaction::compare()
 	tm.stop();
 	cout << "Time taken to complete Greedy:" << tm.duration() << endl;
 	tm.start();
-	cout << "BalancedTreeStrategy Compaction Cost:" << b->compact() << endl;
+	cout << "BalancedTreeSizeTieredStrategy Compaction Cost:" << bs->compact() << endl;
+	tm.stop();
+	cout << "Time taken to complete Balanced Tree:" << tm.duration() << endl;
+	tm.start();
+	cout << "BalancedTreeGreedyStrategy Compaction Cost:" << bg->compact() << endl;
 	tm.stop();
 	cout << "Time taken to complete Balanced Tree:" << tm.duration() << endl;
 }
@@ -27,7 +31,8 @@ NumberCompaction::NumberCompaction(vector<vector<long> > sstables)
 	NumberStrategyOptions nsOpts(sstables);
 	s = new SizeTieredNumberStrategy(nsOpts);
 	g = new GreedyNumberStrategy(nsOpts); 
-	b = new BalancedTreeNumberStrategy(nsOpts);
+	bs = new BTSizeTieredNumberStrategy(nsOpts);
+	bg = new BTGreedyNumberStrategy(nsOpts);
 }
 
 FileCompaction::FileCompaction(vector<SStable> sstables, long numFiles)

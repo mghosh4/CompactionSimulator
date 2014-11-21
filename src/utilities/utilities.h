@@ -16,6 +16,7 @@ int Save(const string fname, const ClassTo &c)
 #include <string>
 #include <vector>
 #include <queue>
+#include <map>
 using namespace std;
 
 struct Comparator
@@ -29,10 +30,18 @@ struct Comparator
 
 vector< vector<long> > generateCombs(int N, int K);
 
+void findGreedySet(map<long, vector<long> > sstables, vector< vector<long> > combs, vector<long>& minSet, map<string, long>& costMap, int indexMap[]);
+
 string toString(vector<long> idArray);
+
+vector<long> toVector(string str);
 
 void print_sets(priority_queue<vector<long>, vector< vector<long> >, Comparator> fileHeap);
 
+void print_sets(map<long, vector<long> > sets);
+
 void print_set(vector<long> set);
+
+void mergeSets(vector< vector<long> > toMergeSet, long &mergeCost, vector<long> &output);
 
 #endif
