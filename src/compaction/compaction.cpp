@@ -8,22 +8,22 @@ using namespace std;
 void Compaction::compare()
 {
 	Timer tm;
-	tm.start();
+	/*tm.start();
 	cout << "SizeTieredStrategy Compaction Cost:" << s->compact() << endl;
 	tm.stop();
 	cout << "Time taken to complete Size Tiered:" << tm.duration() << endl;
 	tm.start();
 	cout << "GreedyStrategy Compaction Cost:" << g->compact() << endl;
 	tm.stop();
-	cout << "Time taken to complete Greedy:" << tm.duration() << endl;
+	cout << "Time taken to complete Greedy:" << tm.duration() << endl;*/
 	tm.start();
 	cout << "BalancedTreeSizeTieredStrategy Compaction Cost:" << bs->compact() << endl;
 	tm.stop();
 	cout << "Time taken to complete Balanced Tree:" << tm.duration() << endl;
-	tm.start();
+	/*tm.start();
 	cout << "BalancedTreeGreedyStrategy Compaction Cost:" << bg->compact() << endl;
 	tm.stop();
-	cout << "Time taken to complete Balanced Tree:" << tm.duration() << endl;
+	cout << "Time taken to complete Balanced Tree:" << tm.duration() << endl;*/
 }
 
 NumberCompaction::NumberCompaction(vector<vector<long> > sstables)

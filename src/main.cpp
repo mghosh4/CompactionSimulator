@@ -43,9 +43,9 @@ void print_set(Parser *fp)
 		vector<long> set = *it;
 		for (vector<long>::iterator bit = set.begin(); bit != set.end(); bit++)
 		{
-			cout << *bit << " ";
+			cerr << *bit << " ";
 		}
-		cout << "\n";
+		cerr << "\n";
 	}
 }
 
@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 
 	// Create File Sets
 	Parser *fparser = parse_file(argv[1], argv[2]);
-	cout << "Parsing Completed\n";
+	//cout << "Parsing Completed\n";
 	print_set(fparser);
 	compare_strategy(fparser, argv[1]);
 }
