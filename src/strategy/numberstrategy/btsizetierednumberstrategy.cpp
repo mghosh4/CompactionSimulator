@@ -3,9 +3,9 @@
 #include <cmath>
 #include <boost/thread.hpp>
 #include "numberstrategy.h"
-#include "../utilities/constants.h"
-#include "../utilities/utilities.h"
-#include "../utilities/kwaymerge.h"
+#include "../../utilities/constants.h"
+#include "../../utilities/utilities.h"
+#include "../../utilities/kwaymerge.h"
 
 template <class T, class S, class C>
 S& Container(priority_queue<T, S, C>& q) {
@@ -29,7 +29,7 @@ long BTSizeTieredNumberStrategy::compact()
 	boost::thread threads[maxSize];
 	long count = 1, mergeCost = 0;
 	
-	priority_queue<vector<long>, vector< vector<long> >, Comparator> fileHeap(sstables.begin(), sstables.end());
+	priority_queue<vector<long>, vector< vector<long> >, NumberComparator> fileHeap(sstables.begin(), sstables.end());
 	cout << "=====================================================\n";
 	cout << "Iteration " << count << endl;
 	cout << "=====================================================\n";
@@ -49,7 +49,7 @@ long BTSizeTieredNumberStrategy::compact()
 			}
 
 			localCost[thrCount] = 0;
-			threads[thrCount] = boost::thread(&mergeSets, toMergeSet, boost::ref(localCost[thrCount]), boost::ref(output[thrCount]));
+			threads[thrCount] = boost::thread(&mergeNumbers, toMergeSet, boost::ref(localCost[thrCount]), boost::ref(output[thrCount]));
 			thrCount++;
 		}
 
@@ -67,15 +67,15 @@ long BTSizeTieredNumberStrategy::compact()
 		}
 	}
 
-	vector< vector<long> > toMergeSet;
-	while (fileHeap.size() >= 2)
+	if (fileHeap.size() >= 2)
 	{
-		toMergeSet.push_back(fileHeap.top());
-		fileHeap.pop();
-	}
+		vector< vector<long> > toMergeSet;
+		while (fileHeap.size() != 0)
+		{
+			toMergeSet.push_back(fileHeap.top());
+			fileHeap.pop();
+		}
 
-	if (toMergeSet.size())
-	{
 		vector<long> output = KWayNumberMerge::merge(toMergeSet, mergeCost);
 		cout << "Iteration Cost:" << count++ << " " << output.size() << endl;
 		fileHeap.push(output);

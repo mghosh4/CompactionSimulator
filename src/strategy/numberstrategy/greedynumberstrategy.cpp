@@ -1,17 +1,9 @@
 #include <iostream>
 #include <map>
 #include "numberstrategy.h"
-#include "../utilities/constants.h"
-#include "../utilities/utilities.h"
-#include "../utilities/kwaymerge.h"
-
-void print_cost_map(map<string, long> &costMap)
-{
-	for (map<string, long>::iterator it = costMap.begin(); it != costMap.end(); it++)
-	{
-		cout << it->first << " " << it->second << "\n";
-	}
-}
+#include "../../utilities/constants.h"
+#include "../../utilities/utilities.h"
+#include "../../utilities/kwaymerge.h"
 
 long GreedyNumberStrategy::compact()
 {

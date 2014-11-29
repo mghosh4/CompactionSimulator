@@ -36,4 +36,10 @@ class BTGreedyStrategy : public Strategy
 		virtual long compact() = 0;
 };
 
+class RandomStrategy : public Strategy
+{
+	public:
+		RandomStrategy() {}
+		virtual long compact() = 0;
+};
 #endif

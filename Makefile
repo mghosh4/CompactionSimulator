@@ -7,12 +7,16 @@ SRC=\
 	src/utilities/utilities.cpp \
 	src/utilities/kwaymerge.cpp \
 	src/parser/ycsbparser.cpp \
-	src/strategy/sizetierednumberstrategy.cpp \
-	src/strategy/greedynumberstrategy.cpp \
-	src/strategy/btsizetierednumberstrategy.cpp \
-	src/strategy/btgreedynumberstrategy.cpp \
-	src/strategy/sizetieredfilestrategy.cpp \
-	src/strategy/greedyfilestrategy.cpp \
+	src/strategy/numberstrategy/sizetierednumberstrategy.cpp \
+	src/strategy/numberstrategy/greedynumberstrategy.cpp \
+	src/strategy/numberstrategy/btsizetierednumberstrategy.cpp \
+	src/strategy/numberstrategy/btgreedynumberstrategy.cpp \
+	src/strategy/numberstrategy/randomnumberstrategy.cpp \
+	src/strategy/filestrategy/sizetieredfilestrategy.cpp \
+	src/strategy/filestrategy/greedyfilestrategy.cpp \
+	src/strategy/filestrategy/btsizetieredfilestrategy.cpp \
+	src/strategy/filestrategy/btgreedyfilestrategy.cpp \
+	src/strategy/filestrategy/randomfilestrategy.cpp \
 	src/compaction/compaction.cpp 
 
 OBJ=$(SRC:.cpp=.o)

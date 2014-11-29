@@ -17,9 +17,10 @@ int Save(const string fname, const ClassTo &c)
 #include <vector>
 #include <queue>
 #include <map>
+#include "../sstable/sstable.h"
 using namespace std;
 
-struct Comparator
+struct NumberComparator
 {
 	bool operator() (const vector<long> &lhs, const vector<long> &rhs) const
 	{
@@ -27,21 +28,37 @@ struct Comparator
 	}
 };
 
+struct FileComparator
+{
+	bool operator() (const SStable &lhs, const SStable &rhs) const
+	{
+		return lhs.keyCount > rhs.keyCount;
+	}
+};
 
 vector< vector<long> > generateCombs(int N, int K);
 
 void findGreedySet(map<long, vector<long> > sstables, vector< vector<long> > combs, vector<long>& minSet, map<string, long>& costMap, int indexMap[]);
 
+void findGreedySet(map<long, SStable> sstables, vector< vector<long> > combs, vector<long>& minSet, map<string, double>& costMap, int indexMap[]);
+
 string toString(vector<long> idArray);
 
 vector<long> toVector(string str);
 
-void print_sets(priority_queue<vector<long>, vector< vector<long> >, Comparator> fileHeap);
+void print_sets(priority_queue<vector<long>, vector< vector<long> >, NumberComparator> fileHeap);
 
 void print_sets(map<long, vector<long> > sets);
 
+void print_sets(vector< vector<long> > sets);
+
 void print_set(vector<long> set);
 
-void mergeSets(vector< vector<long> > toMergeSet, long &mergeCost, vector<long> &output);
+void print_cost_map(map<string, long> &costMap);
 
+void print_cost_map(map<string, double> &costMap);
+
+void mergeNumbers(vector< vector<long> > toMergeSet, long &mergeCost, vector<long> &output);
+
+void mergeFiles(vector<SStable> toMergeSet, long &mergeCost, long numFiles, SStable &output);
 #endif

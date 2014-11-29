@@ -2,8 +2,8 @@
 #define FILESTRATEGY_H
 
 #include <vector>
-#include "strategy.h"
-#include "../sstable/sstable.h"
+#include "../strategy.h"
+#include "../../sstable/sstable.h"
 
 class FileStrategyOptions
 {
@@ -29,6 +29,33 @@ class GreedyFileStrategy : public GreedyStrategy
 {
 	public: 
 		GreedyFileStrategy(FileStrategyOptions& fsOpts) : mOpts(fsOpts) {}
+		virtual long compact();
+	private:
+		FileStrategyOptions mOpts;
+};
+
+class BTSizeTieredFileStrategy : public BTSizeTieredStrategy
+{
+	public:
+		BTSizeTieredFileStrategy(FileStrategyOptions& nsOpts) : mOpts(nsOpts) {}
+		virtual long compact();
+	private:
+		FileStrategyOptions mOpts;
+};
+
+class BTGreedyFileStrategy : public BTGreedyStrategy
+{
+	public:
+		BTGreedyFileStrategy(FileStrategyOptions& nsOpts) : mOpts(nsOpts) {}
+		virtual long compact();
+	private:
+		FileStrategyOptions mOpts;
+};
+
+class RandomFileStrategy : public RandomStrategy
+{
+	public:
+		RandomFileStrategy(FileStrategyOptions& nsOpts) : mOpts(nsOpts) {}
 		virtual long compact();
 	private:
 		FileStrategyOptions mOpts;

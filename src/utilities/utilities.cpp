@@ -73,9 +73,62 @@ void findGreedySet(map<long, vector<long> > sstables, vector< vector<long> > com
 	//print_cost_map(costMap);
 }
 
-void mergeSets(vector< vector<long> > toMergeSet, long &mergeCost, vector<long> &output)
+void findGreedySet(map<long, SStable> sstables, vector< vector<long> > combs, vector<long>& minSet, map<string, double>& costMap, int indexMap[])
+{
+	//cout << "Size of costMap " << costMap.size() << " sstable size " << sstables.size() << endl;
+	double minCost = INT_MAX, mergeCost;
+	//long count = 0;
+	for (vector< vector<long> >::iterator it = combs.begin(); it != combs.end(); it++)
+	{
+		vector<long> singleComb = *it;
+		
+		vector<SStable> mergeSet;
+		vector<long> idArray;
+		long cost = 0;
+		vector<long>::iterator it1 = singleComb.begin();
+		for (; it1 != singleComb.end(); it1++)
+		{
+			if (*it1 >= sstables.size())
+				break;
+			idArray.push_back(indexMap[*it1]);
+			mergeSet.push_back(sstables[indexMap[*it1]]);
+		}
+
+		// Case when we hit upon an index which is outside the current range of sstables
+		if (it1 != singleComb.end() && *it1 >= sstables.size())
+			continue;		
+
+		string idStr = toString(idArray);
+		map<string, double>::iterator mapIt = costMap.find(idStr);
+		if (mapIt == costMap.end())
+		{
+			HyperLogLog unionHll;
+			for (vector<SStable>::iterator it1 = mergeSet.begin(); it1 != mergeSet.end(); it1++)
+				unionHll.merge(it1->hll);
+			
+			costMap.insert(pair<string, double>(idStr, unionHll.estimate()));
+		}
+
+		mapIt = costMap.find(idStr);
+		if (minCost == INT_MAX || minCost > mapIt->second)
+		{
+			minCost = mapIt->second;
+			minSet = singleComb;
+		}
+	}
+	//cout << "Size of costMap " << costMap.size() << " sstable size " << sstables.size() <<  " count " << count << endl;
+	//print_set2(costMap);
+}
+
+void mergeNumbers(vector< vector<long> > toMergeSet, long &mergeCost, vector<long> &output)
 {
 	output = KWayNumberMerge::merge(toMergeSet, mergeCost);
+	//cout << "Thread Local Cost " << mergeCost << endl;
+}
+
+void mergeFiles(vector<SStable> toMergeSet, long &mergeCost, long numFiles, SStable &output)
+{
+	output = KWayFileMerge::merge(toMergeSet, numFiles, mergeCost);
 	//cout << "Thread Local Cost " << mergeCost << endl;
 }
 
@@ -107,16 +160,10 @@ S& Container(priority_queue<T, S, C>& q) {
     return HackedQueue::Container(q);
 }
 
-void print_sets(priority_queue<vector<long>, vector< vector<long> >, Comparator> fileHeap)
+void print_sets(priority_queue<vector<long>, vector< vector<long> >, NumberComparator> fileHeap)
 {
 	vector< vector<long> > &sets = Container(fileHeap);
-
-	for (vector< vector<long> >::iterator it = sets.begin(); it != sets.end(); it++)
-	{
-		cout << "Count:" << it->size() << endl;
-		print_set(*it);
-	}
-	cout << "\n";
+	print_sets(sets);
 }
 
 void print_sets(map<long, vector<long> > sets)
@@ -129,6 +176,16 @@ void print_sets(map<long, vector<long> > sets)
 	cout << "\n";
 }
 
+void print_sets(vector< vector<long> > sets)
+{
+	for (vector< vector<long> >::iterator it = sets.begin(); it != sets.end(); it++)
+	{
+		cout << "Count:" << it->size() << endl;
+		print_set(*it);
+	}
+	cout << "\n";
+}
+
 void print_set(vector<long> set)
 {
 	for (vector<long>::iterator it = set.begin(); it != set.end(); it++)
@@ -136,4 +193,20 @@ void print_set(vector<long> set)
 		cout << *it << ",";
 	}
 	cout << "\n";
+}
+
+void print_cost_map(map<string, long> &costMap)
+{
+	for (map<string, long>::iterator it = costMap.begin(); it != costMap.end(); it++)
+	{
+		cout << it->first << " " << it->second << "\n";
+	}
+}
+
+void print_cost_map(map<string, double> &costMap)
+{
+	for (map<string, double>::iterator it = costMap.begin(); it != costMap.end(); it++)
+	{
+		cout << it->first << " " << it->second << "\n";
+	}
 }

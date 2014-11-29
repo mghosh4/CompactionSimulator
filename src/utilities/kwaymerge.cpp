@@ -203,6 +203,7 @@ SStable KWayFileMerge::merge(vector<SStable> sstables, long numFiles, long &cost
 	}
 
 	//cout << "Merged File Count:" << output.keyCount << endl;
+	cost += output.keyCount;
 
 	fout.close();
 	return output;

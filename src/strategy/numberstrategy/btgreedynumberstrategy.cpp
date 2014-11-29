@@ -3,9 +3,9 @@
 #include <cmath>
 #include <boost/thread.hpp>
 #include "numberstrategy.h"
-#include "../utilities/constants.h"
-#include "../utilities/utilities.h"
-#include "../utilities/kwaymerge.h"
+#include "../../utilities/constants.h"
+#include "../../utilities/utilities.h"
+#include "../../utilities/kwaymerge.h"
 
 pair<long, string> createKeyValue(const pair<string, long>& keyValue)
 {
@@ -83,7 +83,7 @@ long BTGreedyNumberStrategy::compact()
 
 			//cout << "Merging:" << it->first << " " << it->second << "\n";
 			localCost[thrCount] = 0;
-			threads[thrCount] = boost::thread(&mergeSets, toMerge, boost::ref(localCost[thrCount]), boost::ref(output[thrCount]));
+			threads[thrCount] = boost::thread(&mergeNumbers, toMerge, boost::ref(localCost[thrCount]), boost::ref(output[thrCount]));
 			thrCount++;
 		}
 

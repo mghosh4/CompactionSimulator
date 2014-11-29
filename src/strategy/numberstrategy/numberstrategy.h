@@ -2,7 +2,7 @@
 #define NUMBERSTRATEGY_H
 
 #include<vector>
-#include "strategy.h"
+#include "../strategy.h"
 using namespace std;
 
 class NumberStrategyOptions
@@ -45,6 +45,15 @@ class BTGreedyNumberStrategy : public BTGreedyStrategy
 {
 	public:
 		BTGreedyNumberStrategy(NumberStrategyOptions& nsOpts) : mOpts(nsOpts) {}
+		virtual long compact();
+	private:
+		NumberStrategyOptions mOpts;
+};
+
+class RandomNumberStrategy : public RandomStrategy
+{
+	public:
+		RandomNumberStrategy(NumberStrategyOptions& nsOpts) : mOpts(nsOpts) {}
 		virtual long compact();
 	private:
 		NumberStrategyOptions mOpts;

@@ -16,6 +16,7 @@ class Compaction
 		GreedyStrategy *g;
 		BTSizeTieredStrategy *bs;
 		BTGreedyStrategy *bg;
+		RandomStrategy *r;
 };
 
 class NumberCompaction : public Compaction
