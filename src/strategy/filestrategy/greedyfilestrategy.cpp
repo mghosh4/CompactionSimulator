@@ -35,7 +35,7 @@ long GreedyFileStrategy::compact()
 		vector<long> compactSet;
 
 		//print_set1(combs);
-		findGreedySet(sstables, combs, compactSet, costMap, indexMap);
+		findGreedySet(sstables, combs, compactSet, costMap, indexMap, getCardinalityFn());
 		
 		//Erasing the compacted set and adding the new set
 		vector<SStable> toMerge;
@@ -47,7 +47,7 @@ long GreedyFileStrategy::compact()
 		for (int i = 0; i < compactSet.size(); i++)
 		{
 			cout << sstables[indexMap[compactSet[i]]].filename << " ";
-			//cout << indexMap[compactSet[i]] << " ";
+			cout << indexMap[compactSet[i]] << " ";
 			toMerge.push_back(sstables[indexMap[compactSet[i]]]);
 			sstables.erase(sstables.find(indexMap[compactSet[i]]));
 		}

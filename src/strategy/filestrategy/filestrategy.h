@@ -4,6 +4,8 @@
 #include <vector>
 #include "../strategy.h"
 #include "../../sstable/sstable.h"
+#include "../../utilities/utilities.h"
+
 
 class FileStrategyOptions
 {
@@ -30,8 +32,23 @@ class GreedyFileStrategy : public GreedyStrategy
 	public: 
 		GreedyFileStrategy(FileStrategyOptions& fsOpts) : mOpts(fsOpts) {}
 		virtual long compact();
+		virtual cardfnptr getCardinalityFn() = 0;
 	private:
 		FileStrategyOptions mOpts;
+};
+
+class GreedyHLLFileStrategy : public GreedyFileStrategy
+{
+	public: 
+		GreedyHLLFileStrategy(FileStrategyOptions& fsOpts) : GreedyFileStrategy(fsOpts) {}
+		cardfnptr getCardinalityFn() {return &estimateCardinalityHL;}
+};
+
+class GreedyBFFileStrategy : public GreedyFileStrategy
+{
+	public: 
+		GreedyBFFileStrategy(FileStrategyOptions& fsOpts) : GreedyFileStrategy(fsOpts) {}
+		cardfnptr getCardinalityFn() {return &estimateCardinalityBF;}
 };
 
 class BTSizeTieredFileStrategy : public BTSizeTieredStrategy

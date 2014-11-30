@@ -33,13 +33,14 @@ class NumberParser: public YCSBParser
 class FileParser: public YCSBParser
 {
 	public:
-		FileParser(const char *filename): YCSBParser(filename), mNumFiles(1) {}
+		FileParser(const char *filename, long proj_elem_count): YCSBParser(filename), mNumFiles(1), mElemCount(proj_elem_count) {}
 		virtual void dump(vector<string> sstable);
 		vector<SStable> getSStables() { return mSStables; }
 		long getNumFiles() { return mNumFiles; }
 	private:
 		vector<SStable> mSStables;
 		long mNumFiles;
+		long mElemCount;
 };
 
 #endif

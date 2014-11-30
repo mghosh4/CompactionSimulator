@@ -1,15 +1,16 @@
 #include <iostream>
 #include "parser/ycsbparser.h"
 #include "compaction/compaction.h"
+#include "utilities/constants.h"
 using namespace std;
 
-Parser* parse_file(const char *type, const char *filename)
+Parser* parse_file(const char *type, const char *filename, long proj_elem_count)
 {
 	Parser *f;
 	if (!strcmp(type, "ycsbnumber"))
 		f = new NumberParser(filename);
 	else if (!strcmp(type, "ycsbfile"))
-		f = new FileParser(filename);
+		f = new FileParser(filename, proj_elem_count);
 
 	f->parse();
 	return f;
@@ -43,9 +44,9 @@ void print_set(Parser *fp)
 		vector<long> set = *it;
 		for (vector<long>::iterator bit = set.begin(); bit != set.end(); bit++)
 		{
-			cerr << *bit << " ";
+			cout << *bit << " ";
 		}
-		cerr << "\n";
+		cout << "\n";
 	}
 }
 
@@ -53,12 +54,13 @@ int main(int argc, char *argv[])
 {
 	if (argc < 2)
 	{
-		cout << "Usage ./main <type> <filename>\n";
+		cout << "Usage ./main <type> <filename> <updatepercentage>\n";
 		cout << "Current types supported are ycsbnumber, ycsbfile\n";
 	}
 
 	// Create File Sets
-	Parser *fparser = parse_file(argv[1], argv[2]);
+	long proj_elem_count = RC_COUNT + OP_COUNT * atoi(argv[3]) / 100;
+	Parser *fparser = parse_file(argv[1], argv[2], proj_elem_count);
 	//cout << "Parsing Completed\n";
 	print_set(fparser);
 	compare_strategy(fparser, argv[1]);

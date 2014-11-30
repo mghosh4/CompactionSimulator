@@ -3,10 +3,11 @@ CFLAGS=-g -Wno-deprecated -DDEBUG
 LDFLAGS= -lm -lboost_thread-mt
 SRC=\
 	src/external/murmur3.cpp \
+	src/parser/ycsbparser.cpp \
+	src/sstable/sstable.cpp \
 	src/utilities/timer.cpp \
 	src/utilities/utilities.cpp \
 	src/utilities/kwaymerge.cpp \
-	src/parser/ycsbparser.cpp \
 	src/strategy/numberstrategy/sizetierednumberstrategy.cpp \
 	src/strategy/numberstrategy/greedynumberstrategy.cpp \
 	src/strategy/numberstrategy/btsizetierednumberstrategy.cpp \

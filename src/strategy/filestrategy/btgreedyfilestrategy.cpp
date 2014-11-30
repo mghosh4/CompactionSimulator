@@ -43,7 +43,7 @@ long BTGreedyFileStrategy::compact()
 		sets.clear();
 
 		vector<long> compactSet;
-		findGreedySet(sstables, combs, compactSet, costMap, indexMap);
+		findGreedySet(sstables, combs, compactSet, costMap, indexMap, &estimateCardinalityHL);
 		int thrCount = 0;
 
 		vector< pair<double, string> > costMapInv(costMap.size());

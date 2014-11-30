@@ -70,10 +70,10 @@ void findGreedySet(map<long, vector<long> > sstables, vector< vector<long> > com
 		}
 	}
 	//cout << "Size of costMap " << costMap.size() << " sstable size " << sstables.size() <<  " count " << count << endl;
-	//print_cost_map(costMap);
+	print_cost_map(costMap);
 }
 
-void findGreedySet(map<long, SStable> sstables, vector< vector<long> > combs, vector<long>& minSet, map<string, double>& costMap, int indexMap[])
+void findGreedySet(map<long, SStable> sstables, vector< vector<long> > combs, vector<long>& minSet, map<string, double>& costMap, int indexMap[], cardfnptr c)
 {
 	//cout << "Size of costMap " << costMap.size() << " sstable size " << sstables.size() << endl;
 	double minCost = INT_MAX, mergeCost;
@@ -101,13 +101,7 @@ void findGreedySet(map<long, SStable> sstables, vector< vector<long> > combs, ve
 		string idStr = toString(idArray);
 		map<string, double>::iterator mapIt = costMap.find(idStr);
 		if (mapIt == costMap.end())
-		{
-			HyperLogLog unionHll;
-			for (vector<SStable>::iterator it1 = mergeSet.begin(); it1 != mergeSet.end(); it1++)
-				unionHll.merge(it1->hll);
-			
-			costMap.insert(pair<string, double>(idStr, unionHll.estimate()));
-		}
+			costMap.insert(pair<string, double>(idStr, (*c)(mergeSet)));
 
 		mapIt = costMap.find(idStr);
 		if (minCost == INT_MAX || minCost > mapIt->second)
@@ -117,7 +111,23 @@ void findGreedySet(map<long, SStable> sstables, vector< vector<long> > combs, ve
 		}
 	}
 	//cout << "Size of costMap " << costMap.size() << " sstable size " << sstables.size() <<  " count " << count << endl;
-	//print_set2(costMap);
+	print_cost_map(costMap);
+}
+
+double estimateCardinalityHL(vector<SStable> mergeSet)
+{
+	HyperLogLog unionHll;
+	for (vector<SStable>::iterator it1 = mergeSet.begin(); it1 != mergeSet.end(); it1++)
+		unionHll.merge(it1->hll);
+	return unionHll.estimate();		
+}
+
+double estimateCardinalityBF(vector<SStable> mergeSet)
+{
+	bloom_filter unionbf(mergeSet[0].bf);
+	for (vector<SStable>::iterator it1 = mergeSet.begin(); it1 != mergeSet.end(); it1++)
+		unionbf |= it1->bf;
+	return unionbf.cardinality();		
 }
 
 void mergeNumbers(vector< vector<long> > toMergeSet, long &mergeCost, vector<long> &output)
@@ -199,7 +209,7 @@ void print_cost_map(map<string, long> &costMap)
 {
 	for (map<string, long>::iterator it = costMap.begin(); it != costMap.end(); it++)
 	{
-		cout << it->first << " " << it->second << "\n";
+		cout << it->first << "\t" << it->second << "\n";
 	}
 }
 
@@ -207,6 +217,6 @@ void print_cost_map(map<string, double> &costMap)
 {
 	for (map<string, double>::iterator it = costMap.begin(); it != costMap.end(); it++)
 	{
-		cout << it->first << " " << it->second << "\n";
+		cout << it->first << "\t" << it->second << "\n";
 	}
 }

@@ -14,6 +14,7 @@ class Compaction
 	protected:
 		SizeTieredStrategy *s;
 		GreedyStrategy *g;
+		GreedyStrategy *gh;
 		BTSizeTieredStrategy *bs;
 		BTGreedyStrategy *bg;
 		RandomStrategy *r;

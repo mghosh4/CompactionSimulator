@@ -7,7 +7,7 @@
  * @date Created 2013/3/20
  * @author Hideaki Ohno
  */
-
+#include <iostream>
 #include <vector>
 #include <cmath>
 #include <sstream>
@@ -72,9 +72,16 @@ public:
         MurmurHash3Wrpr(str, len, HLL_HASH_SEED, (void*) &hash);
         uint32_t index = hash >> (32 - b_);
         uint8_t rank = rho((hash << b_), 32 - b_);
+		//std::cout << "Index:" << index << " Rank:" << rank << std::endl;
         if (rank > M_[index]) {
             M_[index] = rank;
+			//std::cout << "Value:" << M_[index] << std::endl;
         }
+		/*std::cout << "Full Set:";
+        for (uint32_t i = 0; i < m_; i++) {
+			std::cout << M_[i] << " ";
+        }
+		std::cout << std::endl;*/
     }
 
     /**
@@ -86,6 +93,7 @@ public:
         double estimate;
         double sum = 0.0;
         for (uint32_t i = 0; i < m_; i++) {
+			//std::cout << "Esimate:" << M_[i] << std::endl;
             sum += 1.0 / pow(2.0, M_[i]);
         }
         estimate = alphaMM_ / sum; // E in the original paper
@@ -96,6 +104,7 @@ public:
                     zeros++;
                 }
             }
+			///std::cout << "Estimate:" << zeros << std::endl;
             if (zeros != 0) {
                 estimate = m_ * log(static_cast<double>(m_)/ zeros);
             }

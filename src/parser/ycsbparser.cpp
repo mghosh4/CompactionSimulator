@@ -90,7 +90,7 @@ void NumberParser::dump(vector<string> sstable)
 void FileParser::dump(vector<string> sstable)
 {
 	map<string, string> sortedSStable;
-	SStable table;
+	SStable table(mElemCount);
 	ostringstream ostr;
 
 	ostr << sstablename << mNumFiles++;
@@ -106,9 +106,11 @@ void FileParser::dump(vector<string> sstable)
 	for (map<string, string>::iterator it = sortedSStable.begin(); it != sortedSStable.end(); it++)
 	{
 		table.hll.add(it->first.c_str(), it->first.length());
+		table.bf.insert(it->first.c_str(), it->first.length());
 		fout << it->first << endl;
 	}
 	table.keyCount = sortedSStable.size();
 	mSStables.push_back(table);
+	cout << "Cardinality:" << table.keyCount << "  " << table.hll.estimate() << " " << table.bf.cardinality() << "\n";
 	fout.close();
 }

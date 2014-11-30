@@ -27,7 +27,32 @@
 #include <limits>
 #include <string>
 #include <vector>
-
+#include <iostream>
+/* Meta program that generates set bit count
+   array of first 256 integers */
+ 
+/* GROUP_A - When combined with META_LOOK_UP
+   generates count for 4x4 elements */
+ 
+#define GROUP_A(x) x, x + 1, x + 1, x + 2
+ 
+/* GROUP_B - When combined with META_LOOK_UP
+   generates count for 4x4x4 elements */
+ 
+#define GROUP_B(x) GROUP_A(x), GROUP_A(x+1), GROUP_A(x+1), GROUP_A(x+2)
+ 
+/* GROUP_C - When combined with META_LOOK_UP
+   generates count for 4x4x4x4 elements */
+ 
+#define GROUP_C(x) GROUP_B(x), GROUP_B(x+1), GROUP_B(x+1), GROUP_B(x+2)
+ 
+/* Provide appropriate letter to generate the table */
+ 
+#define META_LOOK_UP(PARAMETER) \
+   GROUP_##PARAMETER(0),  \
+   GROUP_##PARAMETER(1),  \
+   GROUP_##PARAMETER(1),  \
+   GROUP_##PARAMETER(2)   \
 
 static const std::size_t bits_per_char = 0x08;    // 8 bits in 1 char(unsigned)
 static const unsigned char bit_mask[bits_per_char] = {
@@ -193,6 +218,7 @@ public:
 
    bloom_filter(const bloom_filter& filter)
    {
+	  bit_table_ = 0;
       this->operator=(filter);
    }
 
@@ -231,7 +257,8 @@ public:
          inserted_element_count_ = f.inserted_element_count_;
          random_seed_ = f.random_seed_;
          desired_false_positive_probability_ = f.desired_false_positive_probability_;
-         delete[] bit_table_;
+		 if (bit_table_ != 0)
+         	delete[] bit_table_;
          bit_table_ = new cell_type[static_cast<std::size_t>(raw_table_size_)];
          std::copy(f.bit_table_,f.bit_table_ + raw_table_size_,bit_table_);
          salt_ = f.salt_;
@@ -265,6 +292,7 @@ public:
          bit_table_[bit_index / bits_per_char] |= bit_mask[bit];
       }
       ++inserted_element_count_;
+		//std::cout << "Set Bit:" << countSetBits() << std::endl;
    }
 
    template<typename T>
@@ -363,6 +391,36 @@ public:
    inline std::size_t element_count() const
    {
       return inserted_element_count_;
+   }
+
+   inline double cardinality() const
+   {
+   	  long k = salt_count_;
+	  long N = raw_table_size_;
+	  long X = countSetBits();
+	  //std::cout << "X:" << X << " k:" << k << " N:" << N << std::endl;
+	  double xbyncomp = 1 - (double)X / N;
+	  double logbyk = std::log(1 - xbyncomp) / k;
+	  double cardinality = -N * logbyk;
+	  return cardinality;
+   }
+
+   inline long countSetBits() const
+   {
+	  long X = 0;
+	  static unsigned char const look_up[] = { META_LOOK_UP(C) };
+		//for (int i = 0; i < 256; i++)
+		//	std::cout << i << " " << (int)look_up[i] << std::endl;
+
+	  for (size_t index = 0; index < raw_table_size_; index++)
+	  {
+		//long map = bit_table_[index];
+		//long lookup = look_up[map];
+		//std::cout << "Bit Table:" << map << " Lookup:" << lookup << std::endl;
+	  	  X += look_up[bit_table_[index]];
+	  }
+
+	  return X;
    }
 
    inline double effective_fpp() const

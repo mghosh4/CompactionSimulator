@@ -20,6 +20,8 @@ int Save(const string fname, const ClassTo &c)
 #include "../sstable/sstable.h"
 using namespace std;
 
+typedef double(*cardfnptr)(vector<SStable>);
+
 struct NumberComparator
 {
 	bool operator() (const vector<long> &lhs, const vector<long> &rhs) const
@@ -40,7 +42,10 @@ vector< vector<long> > generateCombs(int N, int K);
 
 void findGreedySet(map<long, vector<long> > sstables, vector< vector<long> > combs, vector<long>& minSet, map<string, long>& costMap, int indexMap[]);
 
-void findGreedySet(map<long, SStable> sstables, vector< vector<long> > combs, vector<long>& minSet, map<string, double>& costMap, int indexMap[]);
+void findGreedySet(map<long, SStable> sstables, vector< vector<long> > combs, vector<long>& minSet, map<string, double>& costMap, int indexMap[], cardfnptr c);
+
+double estimateCardinalityBF(vector<SStable> mergeSet);
+double estimateCardinalityHL(vector<SStable> mergeSet);
 
 string toString(vector<long> idArray);
 
