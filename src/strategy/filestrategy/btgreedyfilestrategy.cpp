@@ -25,13 +25,13 @@ long BTGreedyFileStrategy::compact()
 	boost::thread threads[maxSize];
 	long count = 1, mergeCost = 0;
 
-	while (sets.size() >= COMPACTION_THRESHOLD)
+	while (sets.size() >= consts.COMPACTION_THRESHOLD)
 	{
 		map<long, SStable> sstables;
 		map<string, double> costMap;
 		long lastId = 0;
 
-		vector< vector<long> > combs = generateCombs(sets.size(), COMPACTION_THRESHOLD);
+		vector< vector<long> > combs = generateCombs(sets.size(), consts.COMPACTION_THRESHOLD);
 
 		int indexMap[sets.size()];
 		int indexMapCount = sets.size();

@@ -17,10 +17,10 @@ long SizeTieredFileStrategy::compact()
 
 	priority_queue<SStable, vector<SStable>, FileComparator> fileHeap(sstables.begin(), sstables.end());
 	
-	while(fileHeap.size() >= COMPACTION_THRESHOLD) {
+	while(fileHeap.size() >= consts.COMPACTION_THRESHOLD) {
 		vector<SStable> toMergeSet;
 
-		for (int i = 0; i < COMPACTION_THRESHOLD; i++)
+		for (int i = 0; i < consts.COMPACTION_THRESHOLD; i++)
 		{
 			toMergeSet.push_back(fileHeap.top());
 			fileHeap.pop();
@@ -34,7 +34,7 @@ long SizeTieredFileStrategy::compact()
 		cout << "Iteration " << count << endl;
 		cout << "=====================================================\n";
 		cout << "Merging ";
-		for (int i = 0; i < COMPACTION_THRESHOLD; i++)
+		for (int i = 0; i < consts.COMPACTION_THRESHOLD; i++)
 			cout << toMergeSet[i].filename << " ";
 		cout << "--->" << output.filename << "\n";
 		cout << "Iteration Cost:" << count++ << " " << output.keyCount << endl;
@@ -55,7 +55,7 @@ long SizeTieredFileStrategy::compact()
 		cout << "Iteration " << count << endl;
 		cout << "=====================================================\n";
 		cout << "Merging ";
-		for (int i = 0; i < COMPACTION_THRESHOLD; i++)
+		for (int i = 0; i < consts.COMPACTION_THRESHOLD; i++)
 			cout << toMergeSet[i].filename << " ";
 		cout << "--->" << output.filename << "\n";
 		cout << "Iteration Cost:" << count++ << " " << output.keyCount << endl;

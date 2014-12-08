@@ -5,6 +5,7 @@ SRC=\
 	src/external/murmur3.cpp \
 	src/parser/ycsbparser.cpp \
 	src/sstable/sstable.cpp \
+	src/utilities/constants.cpp \
 	src/utilities/timer.cpp \
 	src/utilities/utilities.cpp \
 	src/utilities/kwaymerge.cpp \

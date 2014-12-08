@@ -17,7 +17,7 @@ long GreedyFileStrategy::compact()
 	map<string, double> costMap;
 	long lastId = 0;
 
-	vector< vector<long> > combs = generateCombs(sets.size(), COMPACTION_THRESHOLD);
+	vector< vector<long> > combs = generateCombs(sets.size(), consts.COMPACTION_THRESHOLD);
 	int indexMap[sets.size()];
 	int indexMapCount = sets.size();
 	for (vector<SStable>::iterator it = sets.begin(); it != sets.end(); it++)

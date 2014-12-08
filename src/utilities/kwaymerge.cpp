@@ -130,7 +130,7 @@ SStable KWayFileMerge::merge(vector<SStable> sstables, long numFiles, long &cost
 	SStable output(sstables[0].proj_key_count);
 
 	ostringstream ostr;
-	ostr << sstablename << numFiles;
+	ostr << consts.sstablename << numFiles;
 	output.filename = ostr.str();
 	ofstream fout(output.filename.c_str());
 	output.keyCount = 0;

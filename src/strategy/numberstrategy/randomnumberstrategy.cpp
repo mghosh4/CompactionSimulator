@@ -21,10 +21,10 @@ long RandomNumberStrategy::compact()
 	print_sets(sstables);
 	srand(time(NULL));
 	
-	while(sstables.size() >= COMPACTION_THRESHOLD) {
+	while(sstables.size() >= consts.COMPACTION_THRESHOLD) {
 		vector< vector<long> > toMergeSet;
 
-		for (int i = 0; i < COMPACTION_THRESHOLD; i++)
+		for (int i = 0; i < consts.COMPACTION_THRESHOLD; i++)
 		{
 			index = rand() % sstables.size();
 			toMergeSet.push_back(sstables[index]);

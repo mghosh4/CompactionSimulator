@@ -1,26 +1,28 @@
 #!/bin/sh
-source setup.conf
+make clean
+make
+source $1
 rc=$recordcount
-oc=$operationcount
-up=$updateproportion
+fi=$fileperiteration
 for dist in "${distribution[@]}"
 do
-#	for up in "${updateproportion[@]}"
-#	do
-	#for rc in "${recordcount[@]}"
-	#do
-	#	for oc in "${operationcount[@]}"
-	#	do
-			ip=$((100 - $up))
-			echo "Distribution:" $dist " Record Count:" $rc " Operation Count:" $oc "Update Proportion:" $up "Insert Proportion" $ip
-			if [ ! -f testfiles/testfile-$dist-$rc-$oc-$up.txt ]; then
-				$YCSB_HOME/bin/ycsb load basic -p recordcount=$rc -P $YCSB_HOME/workloads/$dist > testfiles/testfile-$dist-$rc-$oc-$up.txt
-				$YCSB_HOME/bin/ycsb run basic -p recordcount=$rc -p operationcount=$oc -p updateproportion=$up -p insertproportion=$ip -P $YCSB_HOME/workloads/$dist >> testfiles/testfile-$dist-$rc-$oc-$up.txt
-			fi
-			./main ycsbfile testfiles/testfile-$dist-$rc-$oc-$up.txt $up > result/greedyfile-$dist-$rc-$oc-$up.txt  
-			./main ycsbnumber testfiles/testfile-$dist-$rc-$oc-$up.txt $up > result/greedynumber-$dist-$rc-$oc-$up.txt
-			#./set-merge/myprog set-merge/testfiles/testfile-$dist-$rc-$oc-$up.txt > set-merge/result/result-$dist-$rc-$oc-$up.txt
-			#rm logs/*
-#		done
-#	done
+	for up in "${updateproportion[@]}"
+	do
+		for oc in "${operationcount[@]}"
+		do
+			for fs in "${filesize[@]}"
+			do
+				echo "YCSB_HOME=/project/mongo-db-query/YCSB" > conffiles/$1
+				echo "dist=$dist" >> conffiles/$1
+				echo "oc=$oc" >> conffiles/$1
+				echo "fs=$fs" >> conffiles/$1
+				echo "rc=$rc" >> conffiles/$1
+				echo "up=$up" >> conffiles/$1
+				echo "fi=$fi" >> conffiles/$1
+				ip=$((100 - $up))
+				echo "ip=$ip" >> conffiles/$1
+				sh runresult.sh conffiles/$1
+			done
+		done
+	done
 done

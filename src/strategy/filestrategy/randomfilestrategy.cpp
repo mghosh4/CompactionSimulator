@@ -18,14 +18,14 @@ long RandomFileStrategy::compact()
 
 	srand(time(NULL));
 	
-	while(sstables.size() >= COMPACTION_THRESHOLD) {
+	while(sstables.size() >= consts.COMPACTION_THRESHOLD) {
 		vector<SStable> toMergeSet;
 
 		cout << "=====================================================\n";
 		cout << "Iteration " << count << endl;
 		cout << "=====================================================\n";
 		cout << "Merging ";
-		for (int i = 0; i < COMPACTION_THRESHOLD; i++)
+		for (int i = 0; i < consts.COMPACTION_THRESHOLD; i++)
 		{
 			index = rand() % sstables.size();
 			cout << sstables[index].filename << " ";

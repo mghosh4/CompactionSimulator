@@ -4,6 +4,8 @@
 #include "utilities/constants.h"
 using namespace std;
 
+Constants consts;
+
 Parser* parse_file(const char *type, const char *filename, long proj_elem_count)
 {
 	Parser *f;
@@ -58,8 +60,10 @@ int main(int argc, char *argv[])
 		cout << "Current types supported are ycsbnumber, ycsbfile\n";
 	}
 
+	Constants c(argv[3]);
+	consts = c;
 	// Create File Sets
-	long proj_elem_count = RC_COUNT + OP_COUNT * atoi(argv[3]) / 100;
+	long proj_elem_count = (long) ceil(consts.RC_COUNT + consts.OP_COUNT * consts.UPDATE_PROP / 100.0);
 	Parser *fparser = parse_file(argv[1], argv[2], proj_elem_count);
 	//cout << "Parsing Completed\n";
 	print_set(fparser);

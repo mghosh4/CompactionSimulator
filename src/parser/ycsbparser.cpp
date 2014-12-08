@@ -25,6 +25,7 @@ void YCSBParser::parse()
 {
 	vector<string> sstable;
 	string line;
+	long optimalLowerBound = 0;
 
 	ifstream myfile (mFilename.c_str());
 	if (myfile.is_open())
@@ -37,21 +38,23 @@ void YCSBParser::parse()
 
 			sstable.push_back(line);
 
-			if (sstable.size() >= SIZE_THRESHOLD)
+			if (sstable.size() >= consts.SIZE_THRESHOLD)
 			{
-				dump(sstable);
+				dump(sstable, optimalLowerBound);
 				sstable.clear();
 			}
 
 		}
 		if (sstable.size())
-			dump(sstable);
+			dump(sstable, optimalLowerBound);
 		myfile.close();
 	}
 	else
 	{
 		cout << "File Open failed" << endl;
 	}
+
+	cout << "Sum of File Size (Lower Bound Compaction Cost):" << optimalLowerBound << endl;
 
 	//print_set(mSStables);
 }
@@ -70,7 +73,7 @@ string YCSBParser::parse_line(string line)
 	return key;
 }
 
-void NumberParser::dump(vector<string> sstable)
+void NumberParser::dump(vector<string> sstable, long &optimalLowerBound)
 {
 	vector<long> sortedSStable;
 	for (vector<string>::iterator it = sstable.begin(); it != sstable.end(); it++)
@@ -81,19 +84,20 @@ void NumberParser::dump(vector<string> sstable)
 			mKeyMap.insert(pair<string, long>(key, mKeyMap.size()));
 		sortedSStable.push_back(mKeyMap.find(key)->second);
 	}
+	optimalLowerBound += sortedSStable.size();
 	sort(sortedSStable.begin(), sortedSStable.end());
 	vector<long>::iterator it = unique(sortedSStable.begin(), sortedSStable.end());
 	sortedSStable.resize(distance(sortedSStable.begin(), it));
 	mSStables.push_back(sortedSStable);
 }
 
-void FileParser::dump(vector<string> sstable)
+void FileParser::dump(vector<string> sstable, long &optimalLowerBound)
 {
 	map<string, string> sortedSStable;
 	SStable table(mElemCount);
 	ostringstream ostr;
 
-	ostr << sstablename << mNumFiles++;
+	ostr << consts.sstablename << mNumFiles++;
 	table.filename = ostr.str();
 	for (vector<string>::iterator it = sstable.begin(); it != sstable.end(); it++)
 	{
@@ -101,6 +105,8 @@ void FileParser::dump(vector<string> sstable)
 		if (sortedSStable.find(key) == sortedSStable.end())
 			sortedSStable.insert(pair<string, string>(key, *it));
 	}
+
+	optimalLowerBound += sortedSStable.size();
 
 	ofstream fout(table.filename.c_str());
 	for (map<string, string>::iterator it = sortedSStable.begin(); it != sortedSStable.end(); it++)
@@ -111,6 +117,6 @@ void FileParser::dump(vector<string> sstable)
 	}
 	table.keyCount = sortedSStable.size();
 	mSStables.push_back(table);
-	cout << "Cardinality:" << table.keyCount << "  " << table.hll.estimate() << " " << table.bf.cardinality() << "\n";
+	//cout << "Cardinality:" << table.keyCount << "  " << table.hll.estimate() << " " << table.bf.cardinality() << "\n";
 	fout.close();
 }

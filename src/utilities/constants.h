@@ -1,5 +1,21 @@
-const int SIZE_THRESHOLD = 20; //1000;
-const int COMPACTION_THRESHOLD = 2;
-const long int OP_COUNT=320; //100000;
-const long int RC_COUNT=20; //1000;
-const string sstablename = "logs/sstablefile";
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
+#include <string>
+using namespace std;
+
+class Constants
+{
+	public:
+		int SIZE_THRESHOLD;
+		int COMPACTION_THRESHOLD;
+		long int OP_COUNT;
+		long int RC_COUNT;
+		double UPDATE_PROP;
+		string sstablename;
+
+		Constants() {}
+		Constants(const char *filename);
+};
+
+extern Constants consts;
+#endif

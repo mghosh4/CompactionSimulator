@@ -20,10 +20,10 @@ long SizeTieredNumberStrategy::compact()
 	cout << "=====================================================\n";
 	print_sets(fileHeap);
 	
-	while(fileHeap.size() >= COMPACTION_THRESHOLD) {
+	while(fileHeap.size() >= consts.COMPACTION_THRESHOLD) {
 		vector< vector<long> > toMergeSet;
 
-		for (int i = 0; i < COMPACTION_THRESHOLD; i++)
+		for (int i = 0; i < consts.COMPACTION_THRESHOLD; i++)
 		{
 			toMergeSet.push_back(fileHeap.top());
 			fileHeap.pop();
