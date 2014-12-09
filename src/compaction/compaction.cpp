@@ -12,7 +12,7 @@ void Compaction::compare()
 	cout << "SizeTieredStrategy Compaction Cost:" << s->compact() << endl;
 	tm.stop();
 	cout << "Time taken to complete Size Tiered:" << tm.duration() << endl;
-	/*tm.start();
+	tm.start();
 	cout << "GreedyStrategy Compaction Cost:" << g->compact() << endl;
 	tm.stop();
 	cout << "Time taken to complete Greedy:" << tm.duration() << endl;
@@ -22,15 +22,15 @@ void Compaction::compare()
 		cout << "GreedyStrategy Hyperloglog Compaction Cost:" << gh->compact() << endl;
 		tm.stop();
 		cout << "Time taken to complete Greedy:" << tm.duration() << endl;
-	}*/
+	}
 	tm.start();
 	cout << "BalancedTreeSizeTieredStrategy Compaction Cost:" << bs->compact() << endl;
 	tm.stop();
 	cout << "Time taken to complete Balanced Tree:" << tm.duration() << endl;
-	/*tm.start();
+	tm.start();
 	cout << "BalancedTreeGreedyStrategy Compaction Cost:" << bg->compact() << endl;
 	tm.stop();
-	cout << "Time taken to complete Balanced Tree:" << tm.duration() << endl;*/
+	cout << "Time taken to complete Balanced Tree:" << tm.duration() << endl;
 	tm.start();
 	cout << "RandomStrategy Compaction Cost:" << r->compact() << endl;
 	tm.stop();

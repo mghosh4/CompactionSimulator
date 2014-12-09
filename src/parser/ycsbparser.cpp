@@ -23,6 +23,7 @@ void print_set(vector< vector<long> > sstables)
 
 void YCSBParser::parse()
 {
+	//cout << "SIZE THRESHOLD:" << consts.SIZE_THRESHOLD << endl;
 	vector<string> sstable;
 	string line;
 	long optimalLowerBound = 0;
@@ -84,10 +85,11 @@ void NumberParser::dump(vector<string> sstable, long &optimalLowerBound)
 			mKeyMap.insert(pair<string, long>(key, mKeyMap.size()));
 		sortedSStable.push_back(mKeyMap.find(key)->second);
 	}
-	optimalLowerBound += sortedSStable.size();
 	sort(sortedSStable.begin(), sortedSStable.end());
 	vector<long>::iterator it = unique(sortedSStable.begin(), sortedSStable.end());
 	sortedSStable.resize(distance(sortedSStable.begin(), it));
+	optimalLowerBound += sortedSStable.size();
+	//cout << optimalLowerBound << endl;
 	mSStables.push_back(sortedSStable);
 }
 
@@ -107,6 +109,7 @@ void FileParser::dump(vector<string> sstable, long &optimalLowerBound)
 	}
 
 	optimalLowerBound += sortedSStable.size();
+	//cout << optimalLowerBound << endl;
 
 	ofstream fout(table.filename.c_str());
 	for (map<string, string>::iterator it = sortedSStable.begin(); it != sortedSStable.end(); it++)
