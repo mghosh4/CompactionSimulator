@@ -8,33 +8,33 @@ using namespace std;
 void Compaction::compare()
 {
 	Timer tm;
-	tm.start();
+	/*tm.start();
 	cout << "SizeTieredStrategy Compaction Cost:" << s->compact() << endl;
 	tm.stop();
-	cout << "Time taken to complete Size Tiered:" << tm.duration() << endl;
+	cout << "SizeTieredStrategy Completion Time:" << tm.duration() << endl;*/
 	tm.start();
 	cout << "GreedyStrategy Compaction Cost:" << g->compact() << endl;
 	tm.stop();
-	cout << "Time taken to complete Greedy:" << tm.duration() << endl;
-	if (gh)
+	cout << "GreedyStrategy Completion Time:" << tm.duration() << endl;
+	/*if (gh)
 	{
 		tm.start();
 		cout << "GreedyStrategy Hyperloglog Compaction Cost:" << gh->compact() << endl;
 		tm.stop();
-		cout << "Time taken to complete Greedy:" << tm.duration() << endl;
+		cout << "GreedyStrategy Hyperloglog Completion Time:" << tm.duration() << endl;
 	}
 	tm.start();
 	cout << "BalancedTreeSizeTieredStrategy Compaction Cost:" << bs->compact() << endl;
 	tm.stop();
-	cout << "Time taken to complete Balanced Tree:" << tm.duration() << endl;
+	cout << "BalancedTreeSizeTieredStrategy Completion Time:" << tm.duration() << endl;
 	tm.start();
 	cout << "BalancedTreeGreedyStrategy Compaction Cost:" << bg->compact() << endl;
 	tm.stop();
-	cout << "Time taken to complete Balanced Tree:" << tm.duration() << endl;
+	cout << "BalancedTreeGreedyStrategy Completion Time:" << tm.duration() << endl;
 	tm.start();
 	cout << "RandomStrategy Compaction Cost:" << r->compact() << endl;
 	tm.stop();
-	cout << "Time taken to complete Random:" << tm.duration() << endl;
+	cout << "RandomStrategy Completion Time:" << tm.duration() << endl;*/
 }
 
 NumberCompaction::NumberCompaction(vector<vector<long> > sstables)

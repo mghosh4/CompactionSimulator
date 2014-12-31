@@ -1,6 +1,6 @@
 #!/bin/sh
-make clean
-make
+#make clean
+#make
 source $1
 rc=$recordcount
 fi=$fileperiteration
@@ -13,6 +13,9 @@ do
 			for fs in "${filesize[@]}"
 			do
 				echo "YCSB_HOME=/project/mongo-db-query/YCSB" > conffiles/$1
+				echo "OUTPUT_FLDR=/project/mongo-db-query/CompactionSimulator/result/experiment" >> conffiles/$1
+				echo "EXECUTABLE=fullmain" >> conffiles/$1
+				echo "of=logs/cmpsstable" >> conffiles/$1
 				echo "dist=$dist" >> conffiles/$1
 				echo "oc=$oc" >> conffiles/$1
 				echo "fs=$fs" >> conffiles/$1

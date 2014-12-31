@@ -6,6 +6,7 @@
 #include "../../utilities/constants.h"
 #include "../../utilities/utilities.h"
 #include "../../utilities/kwaymerge.h"
+#include "../../utilities/timer.h"
 
 pair<double, string> createKeyValue(const pair<string, double>& keyValue)
 {
@@ -25,6 +26,9 @@ long BTGreedyFileStrategy::compact()
 	boost::thread threads[maxSize];
 	long count = 1, mergeCost = 0;
 
+	Timer tm;
+	long planTime = 0;
+
 	while (sets.size() >= consts.COMPACTION_THRESHOLD)
 	{
 		map<long, SStable> sstables;
@@ -43,7 +47,10 @@ long BTGreedyFileStrategy::compact()
 		sets.clear();
 
 		vector<long> compactSet;
+		tm.start();
 		findGreedySet(sstables, combs, compactSet, costMap, indexMap, &estimateCardinalityHL);
+		tm.stop();
+		planTime += tm.duration();
 		int thrCount = 0;
 
 		vector< pair<double, string> > costMapInv(costMap.size());
@@ -116,6 +123,8 @@ long BTGreedyFileStrategy::compact()
 		SStable output = KWayFileMerge::merge(sets, numFiles++, mergeCost);
 		cout << "Iteration Cost:" << count++ << " " << output.keyCount << endl;
 	}
+
+	cout << "BalancedTreeGreedyStrategy Plan Time:" << planTime << endl;
 
 	return mergeCost;
 }

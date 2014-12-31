@@ -4,13 +4,16 @@
 #include "../../utilities/constants.h"
 #include "../../utilities/utilities.h"
 #include "../../utilities/kwaymerge.h"
+#include "../../utilities/timer.h"
 
 long SizeTieredFileStrategy::compact()
 {
 	vector<SStable> sstables = mOpts.getSStables();
 	long numFiles = mOpts.getNumFiles();
 	
+	Timer tm;
 	long mergeCost = 0, count = 1;
+	int mergeTime = 0;
 	
 	if(sstables.size() == 0)
 		return mergeCost;
@@ -26,7 +29,10 @@ long SizeTieredFileStrategy::compact()
 			fileHeap.pop();
 		}
 		
+		tm.start();
 		SStable output = KWayFileMerge::merge(toMergeSet, numFiles++, mergeCost);
+		tm.stop();
+		mergeTime += tm.duration();
 		//print_set1(toMergeSet);
 		//cout << "Merging two sets of size " << f1.size() << " " << f2.size() << " to produce output of size " << output.size() << endl;
 		//cout << "Merge Cost " << mergeCost << endl;
@@ -50,7 +56,10 @@ long SizeTieredFileStrategy::compact()
 			fileHeap.pop();
 		}
 
+		tm.start();
 		SStable output = KWayFileMerge::merge(toMergeSet, numFiles++, mergeCost);
+		tm.stop();
+		mergeTime += tm.duration();
 		cout << "=====================================================\n";
 		cout << "Iteration " << count << endl;
 		cout << "=====================================================\n";
@@ -61,6 +70,7 @@ long SizeTieredFileStrategy::compact()
 		cout << "Iteration Cost:" << count++ << " " << output.keyCount << endl;
 		fileHeap.push(output);
 	}
+	cout << "SizeTieredStrategy Merge Time:" << mergeTime << endl;
 
 	return mergeCost;
 }

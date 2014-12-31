@@ -5,6 +5,7 @@
 #include "../../utilities/constants.h"
 #include "../../utilities/utilities.h"
 #include "../../utilities/kwaymerge.h"
+#include "../../utilities/timer.h"
 
 long RandomFileStrategy::compact()
 {
@@ -17,6 +18,9 @@ long RandomFileStrategy::compact()
 		return mergeCost;
 
 	srand(time(NULL));
+
+	Timer tm;
+	int mergeTime = 0;
 	
 	while(sstables.size() >= consts.COMPACTION_THRESHOLD) {
 		vector<SStable> toMergeSet;
@@ -34,7 +38,10 @@ long RandomFileStrategy::compact()
 		}
 		cout << "\n";
 
+		tm.start();
 		SStable output = KWayFileMerge::merge(toMergeSet, numFiles++, mergeCost);
+		tm.stop();
+		mergeTime += tm.duration();
 		//print_set1(toMergeSet);
 		//cout << "Merging two sets of size " << f1.size() << " " << f2.size() << " to produce output of size " << output.size() << endl;
 		cout << "Iteration Cost:" << count++ << " " << output.filename << " " << output.keyCount << endl;
@@ -54,6 +61,8 @@ long RandomFileStrategy::compact()
 		SStable output = KWayFileMerge::merge(sstables, numFiles++, mergeCost);
 		cout << "Iteration Cost:" << count++ << " " << output.filename << " " << output.keyCount << endl;
 	}
+
+	cout << "RandomStrategy Merge Time:" << mergeTime << endl;
 
 	return mergeCost;
 }

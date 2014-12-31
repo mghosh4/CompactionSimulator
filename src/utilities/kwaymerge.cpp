@@ -123,11 +123,14 @@ vector<long> KWayNumberMerge::merge(vector< vector<long> > sstables, long &cost)
 
 SStable KWayFileMerge::merge(vector<SStable> sstables, long numFiles, long &cost)
 {
-	map<string, ifstream*> keyMap;
-	ifstream *fin[sstables.size()];
+	map<string, int> keyMap;
+	ifstream fin[sstables.size()];
 	string line;
 	bool flag = false;
 	SStable output(sstables[0].proj_key_count);
+
+	for (int i = 0; i < sstables.size(); i++)
+		fin[i].open(sstables[i].filename.c_str());
 
 	ostringstream ostr;
 	ostr << consts.sstablename << numFiles;
@@ -135,20 +138,19 @@ SStable KWayFileMerge::merge(vector<SStable> sstables, long numFiles, long &cost
 	ofstream fout(output.filename.c_str());
 	output.keyCount = 0;
 
-	//cout << "Input Size ";
+	cout << "Input Size ";
 	for (vector<SStable>::iterator it = sstables.begin(); it != sstables.end(); it++)
 	{
-		//cout << it->keyCount << " ";
+		cout << it->keyCount << " ";
 		cost += it->keyCount;
 	}
-	//cout << "\n";
+	cout << "\n";
 
 	for (int i = 0; i < sstables.size(); i++)
 	{
-		//cout << "File Name:" << sstables[i].filename.c_str() << "\n";
-		fin[i] = new ifstream(sstables[i].filename.c_str());
+		cout << "File Name:" << sstables[i].filename.c_str() << "\n";
 		flag = false;
-		while (getline(*fin[i], line))
+		while (getline(fin[i], line))
 		{
 			//cout << "Possible:" << line << "\n";
 			if (keyMap.find(line) == keyMap.end())
@@ -160,23 +162,23 @@ SStable KWayFileMerge::merge(vector<SStable> sstables, long numFiles, long &cost
 
 		if (flag)
 		{
-			//cout << "First:" << line << "\n";
-			keyMap.insert(pair<string, ifstream*>(line, fin[i]));
+			cout << "First:" << line << "\n";
+			keyMap.insert(pair<string, int>(line, i));
 		}
 	}
 
-	map<string, ifstream*>::iterator mit = keyMap.begin();
+	map<string, int>::iterator mit = keyMap.begin();
 	while(mit != keyMap.end())
 	{
-		//cout << "Selected:" << mit->first << "\n";
+		cout << "Selected:" << mit->first << "\n";
 		fout << mit->first << endl;
 		output.keyCount++;
 		output.hll.add(mit->first.c_str(), mit->first.length());
 		output.bf.insert(mit->first.c_str(), mit->first.length());
 
-		ifstream* fin = mit->second;
+		int ind = mit->second;
 		flag = false;
-		while (getline(*fin, line))
+		while (getline(fin[ind], line))
 		{
 			//cout << "Possible:" << line << "\n";
 			if (keyMap.find(line) == keyMap.end())
@@ -188,8 +190,8 @@ SStable KWayFileMerge::merge(vector<SStable> sstables, long numFiles, long &cost
 			
 		if (flag)
 		{
-			//cout << "First:" << line << "\n";
-			keyMap.insert(pair<string, ifstream*>(line, fin));
+			cout << "First:" << line << "\n";
+			keyMap.insert(pair<string, int>(line, ind));
 		}
 
 		//printMap(keyMap);
@@ -198,12 +200,9 @@ SStable KWayFileMerge::merge(vector<SStable> sstables, long numFiles, long &cost
 	}
 
 	for (int i = 0; i < sstables.size(); i++)
-	{
-		fin[i]->close();
-		delete fin[i];
-	}
+		fin[i].close();
 
-	//cout << "Merged File Count:" << output.keyCount << endl;
+	cout << "Merged File Count:" << output.keyCount << endl;
 	cost += output.keyCount;
 
 	fout.close();

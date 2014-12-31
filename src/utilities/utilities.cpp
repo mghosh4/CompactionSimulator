@@ -3,7 +3,8 @@
 #include <vector>
 #include <iterator>
 #include "utilities.h"
-#include "../utilities/kwaymerge.h"
+#include "kwaymerge.h"
+#include "timer.h"
 
 vector< vector<long> > generateCombs(int N, int K)
 {
@@ -70,12 +71,14 @@ void findGreedySet(map<long, vector<long> > sstables, vector< vector<long> > com
 		}
 	}
 	//cout << "Size of costMap " << costMap.size() << " sstable size " << sstables.size() <<  " count " << count << endl;
-	print_cost_map(costMap);
+	//print_cost_map(costMap);
 }
 
 void findGreedySet(map<long, SStable> sstables, vector< vector<long> > combs, vector<long>& minSet, map<string, double>& costMap, int indexMap[], cardfnptr c)
 {
-	//cout << "Size of costMap " << costMap.size() << " sstable size " << sstables.size() << endl;
+	Timer tm;
+	tm.start();
+	cout << "FindGreedySet: Size of costMap " << costMap.size() << " sstable size " << sstables.size() << " combs size " << combs.size() << endl;
 	double minCost = INT_MAX, mergeCost;
 	//long count = 0;
 	for (vector< vector<long> >::iterator it = combs.begin(); it != combs.end(); it++)
@@ -93,6 +96,8 @@ void findGreedySet(map<long, SStable> sstables, vector< vector<long> > combs, ve
 			idArray.push_back(indexMap[*it1]);
 			mergeSet.push_back(sstables[indexMap[*it1]]);
 		}
+		tm.stop();
+		cout << "Fisrt Checkpoint: " << tm.duration() << endl;
 
 		// Case when we hit upon an index which is outside the current range of sstables
 		if (it1 != singleComb.end() && *it1 >= sstables.size())
@@ -103,6 +108,8 @@ void findGreedySet(map<long, SStable> sstables, vector< vector<long> > combs, ve
 		if (mapIt == costMap.end())
 			costMap.insert(pair<string, double>(idStr, (*c)(mergeSet)));
 
+		tm.stop();
+		cout << "Second Checkpoint: " << tm.duration() << endl;
 		mapIt = costMap.find(idStr);
 		if (minCost == INT_MAX || minCost > mapIt->second)
 		{
@@ -111,14 +118,18 @@ void findGreedySet(map<long, SStable> sstables, vector< vector<long> > combs, ve
 		}
 	}
 	//cout << "Size of costMap " << costMap.size() << " sstable size " << sstables.size() <<  " count " << count << endl;
-	print_cost_map(costMap);
+	//print_cost_map(costMap);
 }
 
 double estimateCardinalityHL(vector<SStable> mergeSet)
 {
+	Timer tm;
+	tm.start();
 	HyperLogLog unionHll;
 	for (vector<SStable>::iterator it1 = mergeSet.begin(); it1 != mergeSet.end(); it1++)
 		unionHll.merge(it1->hll);
+	tm.stop();
+	cout << "Hyperloglog Time:" << tm.duration() << endl;
 	return unionHll.estimate();		
 }
 

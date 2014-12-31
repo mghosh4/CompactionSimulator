@@ -10,5 +10,5 @@ class Timer
 
     timeval stop();
     
-	int duration() const;
+	double duration() const;
 };

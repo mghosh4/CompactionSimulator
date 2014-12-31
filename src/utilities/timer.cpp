@@ -13,7 +13,7 @@ timeval Timer::stop()
     return this->timer[1];
 }
 
-int Timer::duration() const
+double Timer::duration() const
 {
 	int secs(this->timer[1].tv_sec - this->timer[0].tv_sec);
     int usecs(this->timer[1].tv_usec - this->timer[0].tv_usec);
@@ -24,5 +24,5 @@ int Timer::duration() const
         usecs += 1000000;
     }
 
-    return static_cast<int>(secs * 1000 + usecs / 1000.0 + 0.5);
+    return secs * 1000 + usecs / 1000.0 + 0.5;
 }

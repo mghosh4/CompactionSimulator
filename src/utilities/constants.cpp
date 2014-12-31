@@ -4,7 +4,6 @@
 
 Constants::Constants(const char *filename)
 {
-	sstablename = "logs/sstablefile";
 	ifstream fin(filename);
 	string line;
 
@@ -33,6 +32,10 @@ Constants::Constants(const char *filename)
 		else if(lhs.compare("fi") == 0)
 		{
 			COMPACTION_THRESHOLD = atol(rhs.c_str());
+		}
+		else if(lhs.compare("of") == 0)
+		{
+			sstablename = rhs;
 		}
 	}
 }

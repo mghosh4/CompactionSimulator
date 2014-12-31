@@ -4,6 +4,7 @@
 #include "../../utilities/constants.h"
 #include "../../utilities/utilities.h"
 #include "../../utilities/kwaymerge.h"
+#include "../../utilities/timer.h"
 
 long GreedyFileStrategy::compact()
 {
@@ -16,6 +17,9 @@ long GreedyFileStrategy::compact()
 	map<long, SStable> sstables;
 	map<string, double> costMap;
 	long lastId = 0;
+
+	Timer tm;
+	long mergeTime = 0, planTime = 0;
 
 	vector< vector<long> > combs = generateCombs(sets.size(), consts.COMPACTION_THRESHOLD);
 	int indexMap[sets.size()];
@@ -34,8 +38,12 @@ long GreedyFileStrategy::compact()
 	{
 		vector<long> compactSet;
 
+		tm.start();
 		//print_set1(combs);
 		findGreedySet(sstables, combs, compactSet, costMap, indexMap, getCardinalityFn());
+		tm.stop();
+		planTime += tm.duration();
+		cout << "Planning Time at Iteration " << count << " is " << tm.duration() << endl;
 		
 		//Erasing the compacted set and adding the new set
 		vector<SStable> toMerge;
@@ -52,7 +60,11 @@ long GreedyFileStrategy::compact()
 			sstables.erase(sstables.find(indexMap[compactSet[i]]));
 		}
 		cout << "\n";
+		tm.start();
 		SStable output = KWayFileMerge::merge(toMerge, numFiles++, cost);
+		tm.stop();
+		mergeTime += tm.duration();
+
 		cout << "Iteration Cost:" << count++ << " " << output.keyCount << endl;
 		//cout << "SStable Count:" << sstables.size() << " compact set:" << compactSet.size() << " output size:" << output.size() << endl;
 
@@ -71,6 +83,8 @@ long GreedyFileStrategy::compact()
 		indexMap[indexMapCount++] = lastId++;
 		//cout << "SStable Count:" << sstables.size() << endl;
 	}
+
+	cout << "GreedyStrategy Merge Time:" << mergeTime << endl;
 
 	return cost;
 }

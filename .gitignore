@@ -1,5 +1,7 @@
 *.txt
 *.o
 main
+fullmain
+partmain
 logs/*
 conffiles/*
